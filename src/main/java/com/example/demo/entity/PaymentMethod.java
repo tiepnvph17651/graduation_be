@@ -15,21 +15,15 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Product")
-public class Product {
+@Table(name = "Payment_Method")
+public class PaymentMethod {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Integer id;
 
-    @Column(name = "PRODUCT_NAME")
-    private String productName;
-
-    @Column(name = "DESCRIPTION")
-    private String description;
-
-    @Column(name = "GENDER")
-    private Boolean gender;
+    @Column(name = "NAME_METHOD")
+    private String nameMethod;
 
     @Column(name = "STATUS")
     private String status;
@@ -47,23 +41,4 @@ public class Product {
 
     @Column(name = "MODIFIED_BY")
     private String modifiedBy;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "BRAND_ID", referencedColumnName = "id")
-    private Brand brand;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "STYLE_ID", referencedColumnName = "id")
-    private Style style;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "MATERIAL_ID", referencedColumnName = "id")
-    private Material material;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "SOLE_ID", referencedColumnName = "id")
-    private Sole sole;
-
-    @Column(name = "CODE")
-    private String code;
 }

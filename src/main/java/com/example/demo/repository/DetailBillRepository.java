@@ -4,6 +4,9 @@ import com.example.demo.entity.BillDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface DetailBillRepository extends JpaRepository<BillDetail,Integer> {
+    List<BillDetail> findByBillId(Integer billId);
 }

@@ -270,6 +270,8 @@ public class UserServiceImpl implements UserService {
             Sort sort = Sort.by(Sort.Direction.fromString(sortType), sortField);
             pageable = PageRequest.of(page, size, sort);
         }
+        int offset = pageable.getPageNumber() * pageable.getPageSize();
+        int limit = pageable.getPageSize();
         //Pageable pageable = PageRequest.of(page, size);
         GetEmployeeResponse response = new GetEmployeeResponse();
         //String username = SercurityUtils.getCurrentUser();

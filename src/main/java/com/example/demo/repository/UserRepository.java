@@ -58,16 +58,31 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "ORDER BY u.createdDate ASC, u.fullName ASC, u.birthOfDate ASC")
     Page<User> searchCustomersByUsernameOrEmail(@Param("name") String name, Pageable pageable);
 
-    @Query("SELECT u FROM User u JOIN u.roles r " +
+
+    @Query(value = "SELECT u.* " +
+            "FROM [User_S] u " +
+            "JOIN [User_Role] ur ON u.id = ur.user_Id " +
+            "JOIN [Role] r ON ur.role_Id = r.id " +
             "WHERE r.name = 'ADMIN_ROLE' AND " +
-            "(LOWER(u.username) LIKE LOWER(CONCAT('%', :name, '%')) " +
-            "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :name, '%')) " +
-            "OR LOWER(u.gender) = LOWER( :name) " +
-            "OR LOWER(u.numberPhone) LIKE LOWER(CONCAT('%', :name, '%')) " +
-            "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :name, '%')) " +
-            "OR LOWER(u.status) = LOWER( :name) " +
-            "OR cast(DATE_FORMAT(u.birthOfDate,'%Y-%m-%d') as string) LIKE LOWER(CONCAT('%', :name, '%'))) " +
-            "ORDER BY u.createdDate ASC, u.fullName ASC, u.birthOfDate ASC")
+            "(LOWER(u.username) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
+            "LOWER(u.email) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
+            "LOWER(u.gender) = LOWER(:name) OR " +
+            "LOWER(u.NUMBER_PHONE) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
+            "LOWER(u.status) = LOWER(:name)) "+
+            "ORDER BY u.CREATED_DATE ASC, u.FULL_NAME ASC, u.BIRTH_OF_DATE ASC"
+            ,countQuery = "SELECT COUNT(u.id) " +
+                    "FROM [User] u " +
+                    "JOIN [User_Role] ur ON u.id = ur.user_Id " +
+                    "JOIN [Role] r ON ur.role_Id = r.id " +
+                    "WHERE r.name = 'ADMIN_ROLE' AND " +
+                    "(LOWER(u.username) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
+                    "LOWER(u.email) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
+                    "LOWER(u.gender) = LOWER(:name) OR " +
+                    "LOWER(u.NUMBER_PHONE) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
+                    "LOWER(u.status) = LOWER(:name))",
+            nativeQuery = true)
     Page<User> searchEmployeesByUsernameOrEmail(@Param("name") String name, Pageable pageable);
+
+
 
 }
