@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 
 @Setter
@@ -39,6 +40,13 @@ public class Bill {
     @Column(name = "CREATED_BY")
     private String createdBy;
 
+    @UpdateTimestamp
+    @Column(name = "MODIFIED_DATE")
+    private Date modifiedDate;
+
+    @Column(name = "MODIFIED_BY")
+    private String modifiedBy;
+
     @Column(name = "SHIPPING_DATE")
     private Date shippingDate;
 
@@ -60,4 +68,31 @@ public class Bill {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_CUSTOMER",referencedColumnName = "ID")
     private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ID_PTTT", referencedColumnName = "ID")
+    private PaymentMethod paymentMethod;
+
+    @Column(name = "ESTIMATED_DELIVERY_DATE")
+    private Date estimatedDeliveryDate;
+
+    @Column(name = "STATUS_PAYMENT")
+    private String paymentStatus;
+
+    private String note;
+    private BigDecimal price;
+
+    @PrePersist
+    public void prePersist() {
+        // Generate code only if it is null or empty
+//        if (CommonUtil.isNullOrEmpty(this.code)) {
+//            // Use current timestamp to ensure uniqueness
+//            long timestamp = System.currentTimeMillis();
+//            this.code = "PM" + String.format("%06d", timestamp % 1000000);
+//        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_MONTH, 3); // Ví dụ: thêm 3 ngày từ ngày hiện tại
+        this.estimatedDeliveryDate = calendar.getTime();
+    }
 }

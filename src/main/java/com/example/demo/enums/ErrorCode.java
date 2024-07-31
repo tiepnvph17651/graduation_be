@@ -34,6 +34,7 @@ public enum ErrorCode implements BaseErrorCode {
     BILL_INVALID_STATUS(400, "bill.invalid.status", HttpStatus.BAD_REQUEST),
     QUANTITY_NOT_ENOUGH(400, "quantity.not.enough", HttpStatus.BAD_REQUEST),
     DETAIL_CART_ID_NOT_EXIST(400, "detail.cart.not.exist", HttpStatus.BAD_REQUEST),
+    SHIPPING_HISTORY_NOT_FOUND(400, "shipping.history.not.found", HttpStatus.BAD_REQUEST),
     FAVORITE_NOT_FOUND(400, "favorite.not.found", HttpStatus.BAD_REQUEST);
     private int code;
 

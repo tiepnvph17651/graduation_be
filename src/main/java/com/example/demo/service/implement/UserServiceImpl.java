@@ -240,9 +240,7 @@ public class UserServiceImpl implements UserService {
             Sort sort = Sort.by(Sort.Direction.fromString(sortType), sortField);
             pageable = PageRequest.of(page, size, sort);
         }
-        //Pageable pageable = PageRequest.of(page, size);
         GetCustomerResponse response = new GetCustomerResponse();
-        //String username = SercurityUtils.getCurrentUser();
         Page<User> users = userRepository.searchCustomersByUsernameOrEmail(name, pageable);
         List<CustomerResult> results = new ArrayList<>();
         for (User user : users.getContent()) {
@@ -270,9 +268,7 @@ public class UserServiceImpl implements UserService {
             Sort sort = Sort.by(Sort.Direction.fromString(sortType), sortField);
             pageable = PageRequest.of(page, size, sort);
         }
-        //Pageable pageable = PageRequest.of(page, size);
         GetEmployeeResponse response = new GetEmployeeResponse();
-        //String username = SercurityUtils.getCurrentUser();
         Page<User> users = userRepository.searchEmployeesByUsernameOrEmail(name, pageable);
         List<EmployeeResult> results = new ArrayList<>();
         for (User user : users.getContent()) {
