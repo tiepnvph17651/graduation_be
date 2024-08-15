@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.config.exception.BusinessException;
 import com.example.demo.model.request.ApproveBillRequest;
-import com.example.demo.model.request.BillsRequest;
 import com.example.demo.model.request.GetBillRequest;
 import com.example.demo.model.response.ResponseData;
 import com.example.demo.service.BillService;
