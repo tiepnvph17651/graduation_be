@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.config.exception.BusinessException;
 import com.example.demo.model.request.ApproveBillRequest;
 import com.example.demo.model.request.BillsRequest;
+import com.example.demo.model.request.GetBillRequest;
 import com.example.demo.model.response.ResponseData;
 import com.example.demo.service.BillService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class BillController extends BaseController{
     private final BillService billService;
     @PostMapping("get-bills")
-    public ResponseEntity<ResponseData<Object>> getBills(@RequestBody BillsRequest request,
+    public ResponseEntity<ResponseData<Object>> getBills(@RequestBody GetBillRequest request,
                                                          @RequestParam(defaultValue = "0") int page,
                                                          @RequestParam(defaultValue = "10") int size,
                                                          @RequestParam("sortField") String sortField,

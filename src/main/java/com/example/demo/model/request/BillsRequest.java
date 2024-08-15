@@ -20,4 +20,5 @@ public class BillsRequest {
     private Integer limit;
     private String numberPhone;
     private String customerName;
+    private String keyword;
 }

@@ -26,6 +26,7 @@ public class Constant {
         public static final String REJECT = "R";
         public static final String FINISH = "F";
         public static final String TRANSPORTING = "T";
+        public static final String ROLLBACK = "RB";
 
     }
 
