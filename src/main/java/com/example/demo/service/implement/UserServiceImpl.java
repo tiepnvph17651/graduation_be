@@ -1,6 +1,5 @@
 package com.example.demo.service.implement;
 
-
 import com.example.demo.config.exception.BusinessException;
 import com.example.demo.entity.Email;
 import com.example.demo.entity.Role;
@@ -113,7 +112,9 @@ public class UserServiceImpl implements UserService {
         user.setFullName(request.getFullName());
         user.setNumberPhone(request.getNumberPhone());
         user.setEmail(request.getEmail());
-        user.setBirthOfDate(CommonUtil.str2Date(request.getDateOfBirth()));
+        if(request.getDateOfBirth()!=null){
+            user.setBirthOfDate(CommonUtil.str2Date(request.getDateOfBirth()));
+        }
         user.setGender(request.getGender());
         user.setStatus(CommonUtil.getStatusVn(Constant.STATUS_STYLES.ACTIVE));
         user.setCreatedBy(username);
@@ -126,7 +127,7 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
         UserRole userRole = new UserRole();
         userRole.setUserId(savedUser.getId().intValue());
-        userRole.setRoleId(Integer.parseInt(request.getRoles()));
+        userRole.setRoleId(2);
         userRoleRepository.save(userRole);
         String credentials = username + ":" + password;
         byte[] byteArray = credentials.getBytes();
@@ -162,7 +163,9 @@ public class UserServiceImpl implements UserService {
 
         user.setNumberPhone(userRequest.getNumberPhone());
         user.setEmail(userRequest.getEmail());
-        user.setBirthOfDate(userRequest.getBirthOfDate());
+        if(userRequest.getBirthOfDate()!=null){
+            user.setBirthOfDate(userRequest.getBirthOfDate());
+        }
         user.setGender(userRequest.getGender());
         user.setStatus(CommonUtil.getStatusVn(Constant.STATUS_STYLES.ACTIVE));
         user.setCreatedBy(username);
@@ -298,9 +301,11 @@ public class UserServiceImpl implements UserService {
         response.setId(user.getId());
         response.setEmail(user.getEmail());
         response.setGender(user.getGender());
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        String strDateString = formatter.format(user.getBirthOfDate());
-        response.setBirthOfDate(strDateString);
+        if(user.getBirthOfDate()!=null){
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            String strDateString = formatter.format(user.getBirthOfDate());
+            response.setBirthOfDate(strDateString);
+        }
         response.setStatus(user.getStatus());
         // Chuyển đổi danh sách vai trò thành chuỗi tên các vai trò
         String roles = user.getRoles().stream()
@@ -317,9 +322,11 @@ public class UserServiceImpl implements UserService {
         response.setId(user.getId());
         response.setEmail(user.getEmail());
         response.setGender(user.getGender());
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        String strDateString = formatter.format(user.getBirthOfDate());
-        response.setBirthOfDate(strDateString);
+        if(user.getBirthOfDate()!=null){
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            String strDateString = formatter.format(user.getBirthOfDate());
+            response.setBirthOfDate(strDateString);
+        }
         response.setStatus(user.getStatus());
         String roles = user.getRoles().stream()
                 .map(Role::getName)  // Giả sử Role có phương thức getName() trả về tên vai trò
