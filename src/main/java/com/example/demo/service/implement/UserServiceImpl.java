@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(request.getEmail());
         user.setBirthOfDate(CommonUtil.str2Date(request.getDateOfBirth()));
         user.setGender(request.getGender());
-        user.setStatus(CommonUtil.getStatusVn(Constant.CUSTOMER_STATUS.ACTIVE));
+        user.setStatus(CommonUtil.getStatusVn(Constant.STATUS_STYLES.ACTIVE));
         user.setCreatedBy(username);
         user.setModifiedBy(username);
         // Mã hóa mật khẩu
@@ -164,13 +164,13 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userRequest.getEmail());
         user.setBirthOfDate(userRequest.getBirthOfDate());
         user.setGender(userRequest.getGender());
-        user.setStatus(CommonUtil.getStatusVn(Constant.CUSTOMER_STATUS.ACTIVE));
+        user.setStatus(CommonUtil.getStatusVn(Constant.STATUS_STYLES.ACTIVE));
         user.setCreatedBy(username);
         user.setModifiedBy(username);
         User savedUser = userRepository.save(user);
         UserRole userRole = new UserRole();
         userRole.setUserId(savedUser.getId().intValue());
-        userRole.setRoleId(1);
+        userRole.setRoleId(2 );
         userRoleRepository.save(userRole);
 
         Email email1 = new Email();
@@ -206,7 +206,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userRequest.getEmail());
         user.setBirthOfDate(userRequest.getBirthOfDate());
         user.setGender(userRequest.getGender());
-        user.setStatus(CommonUtil.getStatusVn(userRequest.getStatus()));
+        user.setStatus(CommonUtil.getStatusVn(Constant.STATUS_STYLES.ACTIVE));
         user.setCreatedBy(username);
         user.setModifiedBy(username);
         // Mã hóa mật khẩu
@@ -217,7 +217,7 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
         UserRole userRole = new UserRole();
         userRole.setUserId(savedUser.getId().intValue());
-        userRole.setRoleId(2);
+        userRole.setRoleId(1);
         userRoleRepository.save(userRole);
         String credentials = username + ":" + password;
         byte[] byteArray = credentials.getBytes();
@@ -286,7 +286,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateStatusUser(Long id, String status) throws BusinessException {
         User user = userRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-        user.setStatus("ACTIVE".equals(status) ? "ACTIVE" : "INACTIVE");
+        user.setStatus("Hoạt động".equals(status) ? "Hoạt động" : "Ngừng hoạt động");
+        //user.setStatus(Constant.STATUS_STYLES.ACTIVE.equals(status) ? "Constant.STATUS_STYLES.ACTIVE" : "Constant.STATUS_STYLES.INACTIVE");
         userRepository.save(user);
     }
 

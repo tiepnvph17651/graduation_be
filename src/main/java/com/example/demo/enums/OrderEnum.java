@@ -2,6 +2,7 @@ package com.example.demo.enums;
 
 public enum OrderEnum {
     PENDING("P"),
+    TRANSPORTING("T"),
     DONE("D"),
     CANCEL("C");
 

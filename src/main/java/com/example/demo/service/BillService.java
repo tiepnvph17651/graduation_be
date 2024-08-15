@@ -3,11 +3,12 @@ package com.example.demo.service;
 import com.example.demo.config.exception.BusinessException;
 import com.example.demo.model.request.ApproveBillRequest;
 import com.example.demo.model.request.BillsRequest;
+import com.example.demo.model.request.GetBillRequest;
 import com.example.demo.model.response.BillsResponse;
 import com.example.demo.model.response.DetailOrderResponse;
 
 public interface BillService {
-    BillsResponse getBills(BillsRequest request, int page, int size, String sortField, String sortType);
+    BillsResponse getBills(GetBillRequest request, int page, int size, String sortField, String sortType);
 
     DetailOrderResponse detail(String code) throws BusinessException;
 

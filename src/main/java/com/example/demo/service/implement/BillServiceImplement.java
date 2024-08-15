@@ -7,6 +7,7 @@ import com.example.demo.enums.OrderEnum;
 import com.example.demo.model.info.PaginationInfo;
 import com.example.demo.model.request.ApproveBillRequest;
 import com.example.demo.model.request.BillsRequest;
+import com.example.demo.model.request.GetBillRequest;
 import com.example.demo.model.response.BillsResponse;
 import com.example.demo.model.response.DetailOrderResponse;
 import com.example.demo.model.result.BillResult;
@@ -18,13 +19,15 @@ import com.example.demo.model.utilities.Constant;
 import com.example.demo.model.utilities.FakeData;
 import com.example.demo.repository.*;
 import com.example.demo.service.BillService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +40,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class BillServiceImplement implements BillService {
+    @PersistenceContext
+    private EntityManager entityManager;
     private final BillRepository billRepository;
     private final DetailBillRepository detailBillRepository;
     private final ProductRepository productRepository;
@@ -44,22 +49,26 @@ public class BillServiceImplement implements BillService {
     private final ShippingHistoryRepository shippingHistoryRepository;
 
     @Override
-    public BillsResponse getBills(BillsRequest request, int page, int size, String sortField, String sortType) {
+    public BillsResponse getBills(GetBillRequest request, int page, int size, String sortField, String sortType) {
         log.info("getBills: {}", CommonUtil.beanToString(request));
         BillsResponse response = new BillsResponse();
         List<BillResult> results = new ArrayList<>();
-        String code = request.getCode();
-        String numberPhone = request.getNumberPhone();
-        String customerName = request.getCustomerName();
+//        String code = request.getCode();
+//        String numberPhone = request.getNumberPhone();
+//        String customerName = request.getCustomerName();
         String status = request.getStatus();
-        if (CommonUtil.isNullOrEmpty(code)) {
-            code = "";
-        }
-        if (CommonUtil.isNullOrEmpty(numberPhone)) {
-            numberPhone = "";
-        }
-        if (CommonUtil.isNullOrEmpty(customerName)) {
-            customerName = "";
+        String keyword = request.getKeyword();
+//        if (CommonUtil.isNullOrEmpty(code)) {
+//            code = "";
+//        }
+//        if (CommonUtil.isNullOrEmpty(numberPhone)) {
+//            numberPhone = "";
+//        }
+//        if (CommonUtil.isNullOrEmpty(customerName)) {
+//            customerName = "";
+        //}
+        if (CommonUtil.isNullOrEmpty(keyword)) {
+            keyword = "";
         }
         Pageable pageable = null;
         if (CommonUtil.isNullOrEmpty(sortField)) {
@@ -68,7 +77,8 @@ public class BillServiceImplement implements BillService {
             Sort sort = Sort.by(Sort.Direction.fromString(sortType), sortField);
             pageable = PageRequest.of(page, size, sort);
         }
-        Page<Bill> bills = billRepository.getAll(code, customerName, numberPhone, status, pageable);
+        // Page<Bill> bills = billRepository.getAll(code, customerName, numberPhone, status, pageable);
+        Page<Bill> bills = billRepository.searchBills(keyword, status, pageable);
         for (Bill bill : bills) {
             BillResult result = new BillResult();
             result.setId(bill.getId());
@@ -117,7 +127,7 @@ public class BillServiceImplement implements BillService {
         List<SubOrderResult> subOrderResults = new ArrayList<>();
         List<BillDetail> detailBills = detailBillRepository.findByBillId(bill.getId());
         log.info("Processing BillDetail for Bill ID: {}", bill.getId());
-        System.out.println("---------------------Omygot-----------------------"+ detailBills);
+        System.out.println("---------------------Omygot-----------------------" + detailBills);
         for (BillDetail detailBill : detailBills) {
             SubOrderResult subOrderResult = new SubOrderResult();
             subOrderResult.setProductName(detailBill.getProductDetail().getProduct().getProductName());
@@ -137,7 +147,7 @@ public class BillServiceImplement implements BillService {
     @Transactional
     @Override
     public boolean init(ApproveBillRequest request, String username) throws BusinessException {
-        System.out.println("init:---------------------{}"+ CommonUtil.beanToString(request));
+        System.out.println("init:---------------------{}" + CommonUtil.beanToString(request));
         Optional<Bill> optional = billRepository.findById(request.getId());
         if (optional.isEmpty()) {
             throw new BusinessException(ErrorCode.BILL_NOT_FOUND);
@@ -160,7 +170,7 @@ public class BillServiceImplement implements BillService {
                 if (!bill.getStatus().equals(Constant.STATUS_PAYMENT.WAITING)) {
                     throw new BusinessException(ErrorCode.BILL_INVALID_STATUS);
                 }
-                histories= FakeData.getChildSHIPPING(username, bill.getId(), history.getId());
+                histories = FakeData.getChildSHIPPING(username, bill.getId(), history.getId());
                 bill.setStatus(Constant.STATUS_PAYMENT.TRANSPORTING);
                 break;
             case Constant.STATUS_PAYMENT.FINISH:
@@ -175,6 +185,14 @@ public class BillServiceImplement implements BillService {
                 if (!bill.getStatus().equals(Constant.STATUS_PAYMENT.WAITING)) {
                     throw new BusinessException(ErrorCode.BILL_INVALID_STATUS);
                 }
+            case Constant.STATUS_PAYMENT.ROLLBACK:
+                if (bill.getStatus().equals(Constant.STATUS_PAYMENT.WAITING)) {
+                    // Delete all shipping history records with LEVEL >= 2 (for example)
+                    this.rollbackShippingHistory(bill.getId(), 2);
+                    // this.shippingHistoryRepository.deleteByBillIdAndLevelGreaterThanEqual(bill.getId(), 2);
+                    bill.setStatus(Constant.STATUS_PAYMENT.PENDING);
+                }
+                break;
             default:
                 bill.setStatus(Constant.STATUS_PAYMENT.CANCEL);
         }
@@ -193,15 +211,15 @@ public class BillServiceImplement implements BillService {
         this.billRepository.save(bill);
         return true;
     }
-    private void updateShippingHistoryBeforeSearch(Integer billId, String username) {
-        // Cập nhật các thông tin cần thiết trước khi tìm kiếm
-        ShippingHistory existingHistory = this.shippingHistoryRepository.findFirstByBillIdAndParentIdIsNullAndStatusOrderByModifiedDateAsc(billId, OrderEnum.PENDING.getValue());
-        if (existingHistory != null) {
-            existingHistory.setModifiedBy(username);
-            existingHistory.setModifiedDate(LocalDateTime.now());
-            this.shippingHistoryRepository.save(existingHistory);
-        }
+
+
+    public void rollbackShippingHistory(Integer billId, int level) {
+        int deletedRows = shippingHistoryRepository.deleteByBillIdAndLevelGreaterThanEqual(billId, level);
+        System.out.println("Number of deleted rows: " + deletedRows);
+        //shippingHistoryRepository.deleteByBillIdAndLevelGreaterThanEqual(billId, level);
     }
+
+
     @Override
     public BillsResponse getBills(String status, String billCode, int page, int size, String sortField, String sortType, String username) {
         log.info("getBills: {}", CommonUtil.beanToString(status));
@@ -303,10 +321,10 @@ public class BillServiceImplement implements BillService {
                         orderDetailResult.setIcon(Constant.ICON.PENDING);
                 }
                 i++;
-            }else{
+            } else {
                 orderDetailResult.setIcon(Constant.ICON.TASK);
             }
-            orderDetailResult.setStepCode(history.getId()+"");
+            orderDetailResult.setStepCode(history.getId() + "");
             orderDetailResult.setStepName(history.getTitle());
             orderDetailResult.setStepDate(CommonUtil.date2Str(history.getModifiedDate()));
             orderDetailResult.setDescription(history.getContent());
@@ -314,6 +332,7 @@ public class BillServiceImplement implements BillService {
         }
         return orderDetailResults;
     }
+
     private void rollbackProduct(int billId) {
         List<BillDetail> detailBills = detailBillRepository.findByBillId(billId);
         List<Product> products = new ArrayList<>();

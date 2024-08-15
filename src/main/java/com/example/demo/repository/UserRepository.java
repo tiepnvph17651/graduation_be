@@ -46,40 +46,55 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByNumberPhoneAndIdNot(@Param("numberPhone") String numberPhone, @Param("id") Long id);
 
 
-    @Query("SELECT u FROM User u JOIN u.roles r " +
+    @Query(value = "SELECT u.* FROM User_S u " +
+            "JOIN User_Role ur ON u.id = ur.user_id " +
+            "JOIN Role r ON ur.role_id = r.id " +
             "WHERE r.name = 'USER_ROLE' AND " +
             "(LOWER(u.username) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :name, '%')) " +
-            "OR LOWER(u.gender) = LOWER( :name) " +
-            "OR LOWER(u.numberPhone) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(u.gender) = LOWER(:name) " +
+            "OR LOWER(u.NUMBER_PHONE) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :name, '%')) " +
-            "OR LOWER(u.status) = LOWER( :name) " +
-            "OR cast(DATE_FORMAT(u.birthOfDate,'%Y-%m-%d') as string) LIKE LOWER(CONCAT('%', :name, '%'))) " +
-            "ORDER BY u.createdDate ASC, u.fullName ASC, u.birthOfDate ASC")
+            "OR LOWER(u.status) = LOWER(:name) " +
+            "OR FORMAT(u.BIRTH_OF_DATE, 'yyyy-MM-dd') LIKE LOWER(CONCAT('%', :name, '%'))) " +
+            "ORDER BY u.CREATED_DATE ASC, u.FULL_NAME ASC, u.BIRTH_OF_DATE ASC",
+            countQuery = "SELECT COUNT(*) FROM User_S u " +
+                    "JOIN User_Role ur ON u.id = ur.user_id " +
+                    "JOIN Role r ON ur.role_id = r.id " +
+                    "WHERE r.name = 'USER_ROLE' AND " +
+                    "(LOWER(u.username) LIKE LOWER(CONCAT('%', :name, '%')) " +
+                    "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :name, '%')) " +
+                    "OR LOWER(u.gender) = LOWER(:name) " +
+                    "OR LOWER(u.NUMBER_PHONE) LIKE LOWER(CONCAT('%', :name, '%')) " +
+                    "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :name, '%')) " +
+                    "OR LOWER(u.status) = LOWER(:name) " +
+                    "OR FORMAT(u.BIRTH_OF_DATE, 'yyyy-MM-dd') LIKE LOWER(CONCAT('%', :name, '%'))) ",
+            nativeQuery = true)
     Page<User> searchCustomersByUsernameOrEmail(@Param("name") String name, Pageable pageable);
 
-
-    @Query(value = "SELECT u.* " +
-            "FROM [User_S] u " +
-            "JOIN [User_Role] ur ON u.id = ur.user_Id " +
-            "JOIN [Role] r ON ur.role_Id = r.id " +
+    @Query(value = "SELECT u.* FROM User_S u " +
+            "JOIN User_Role ur ON u.id = ur.user_id " +
+            "JOIN Role r ON ur.role_id = r.id " +
             "WHERE r.name = 'ADMIN_ROLE' AND " +
-            "(LOWER(u.username) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
-            "LOWER(u.email) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
-            "LOWER(u.gender) = LOWER(:name) OR " +
-            "LOWER(u.NUMBER_PHONE) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
-            "LOWER(u.status) = LOWER(:name)) "+
-            "ORDER BY u.CREATED_DATE ASC, u.FULL_NAME ASC, u.BIRTH_OF_DATE ASC"
-            ,countQuery = "SELECT COUNT(u.id) " +
-                    "FROM [User] u " +
-                    "JOIN [User_Role] ur ON u.id = ur.user_Id " +
-                    "JOIN [Role] r ON ur.role_Id = r.id " +
+            "(LOWER(u.username) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(u.gender) = LOWER(:name) " +
+            "OR LOWER(u.NUMBER_PHONE) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(u.status) = LOWER(:name) " +
+            "OR FORMAT(u.BIRTH_OF_DATE, 'yyyy-MM-dd') LIKE LOWER(CONCAT('%', :name, '%'))) " +
+            "ORDER BY u.CREATED_DATE ASC, u.FULL_NAME ASC, u.BIRTH_OF_DATE ASC",
+            countQuery = "SELECT COUNT(*) FROM User_S u " +
+                    "JOIN User_Role ur ON u.id = ur.user_id " +
+                    "JOIN Role r ON ur.role_id = r.id " +
                     "WHERE r.name = 'ADMIN_ROLE' AND " +
-                    "(LOWER(u.username) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
-                    "LOWER(u.email) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
-                    "LOWER(u.gender) = LOWER(:name) OR " +
-                    "LOWER(u.NUMBER_PHONE) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
-                    "LOWER(u.status) = LOWER(:name))",
+                    "(LOWER(u.username) LIKE LOWER(CONCAT('%', :name, '%')) " +
+                    "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :name, '%')) " +
+                    "OR LOWER(u.gender) = LOWER(:name) " +
+                    "OR LOWER(u.NUMBER_PHONE) LIKE LOWER(CONCAT('%', :name, '%')) " +
+                    "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :name, '%')) " +
+                    "OR LOWER(u.status) = LOWER(:name) " +
+                    "OR FORMAT(u.BIRTH_OF_DATE, 'yyyy-MM-dd') LIKE LOWER(CONCAT('%', :name, '%'))) ",
             nativeQuery = true)
     Page<User> searchEmployeesByUsernameOrEmail(@Param("name") String name, Pageable pageable);
 

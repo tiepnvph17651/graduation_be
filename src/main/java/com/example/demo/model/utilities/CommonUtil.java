@@ -214,7 +214,7 @@ public class CommonUtil {
             case Constant.STATUS_STYLES.ACTIVE:
                 return "Hoạt động";
             case Constant.STATUS_STYLES.INACTIVE:
-                return "Ngưng hoạt động";
+                return "Ngừng hoạt động";
             case Constant.STATUS_STYLES.DELETED:
                 return "Đã xóa";
             case Constant.STATUS_PAYMENT.PENDING:
@@ -229,6 +229,8 @@ public class CommonUtil {
                 return "Đã giao hàng";
             case Constant.STATUS_PAYMENT.WAITING:
                 return "Chờ giao hàng";
+            case Constant.STATUS_PAYMENT.TRANSPORTING:
+                return "Đang giao hàng";
             default:
                 return null;
         }
