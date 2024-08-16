@@ -19,34 +19,10 @@ import java.util.Date;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
     private Integer id;
 
-    @Column(name = "PRODUCT_NAME")
+    @Column(name = "PRODUCT_NAME", nullable = false)
     private String productName;
-
-    @Column(name = "DESCRIPTION")
-    private String description;
-
-    @Column(name = "GENDER")
-    private Boolean gender;
-
-    @Column(name = "STATUS")
-    private String status;
-
-    @CreationTimestamp
-    @Column(name = "CREATED_DATE", updatable = false)
-    private Date createdDate;
-
-    @Column(name = "CREATED_BY")
-    private String createdBy;
-
-    @UpdateTimestamp
-    @Column(name = "MODIFIED_DATE")
-    private Date modifiedDate;
-
-    @Column(name = "MODIFIED_BY")
-    private String modifiedBy;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "BRAND_ID", referencedColumnName = "id")
@@ -63,7 +39,24 @@ public class Product {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SOLE_ID", referencedColumnName = "id")
     private Sole sole;
+    @Column(name = "DESCRIPTION")
+    private String description;
 
-    @Column(name = "CODE")
-    private String code;
+
+    @Column(name = "CREATED_BY")
+    private String createdBy;
+
+    @Column(name = "CREATED_DATE", updatable = false)
+    @CreationTimestamp
+    private Date createdDate;
+
+    @Column(name = "MODIFIED_BY")
+    private String modifiedBy;
+
+    @Column(name = "MODIFIED_DATE")
+    @UpdateTimestamp
+    private Date modifiedDate;
+
+    @Column(name = "STATUS")
+    private Integer status;
 }

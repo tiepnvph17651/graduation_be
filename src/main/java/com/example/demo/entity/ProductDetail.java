@@ -21,7 +21,7 @@ public class ProductDetail {
     private Integer id;
 
     @Column(name = "QUANTITY")
-    private Float quantity;
+    private Integer quantity;
 
     @Column(name = "PRICE")
     private BigDecimal price;
@@ -30,7 +30,7 @@ public class ProductDetail {
     private String description;
 
     @Column(name = "STATUS")
-    private String status;
+    private Integer status;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SIZE_ID", referencedColumnName = "ID")

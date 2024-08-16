@@ -18,9 +18,10 @@ public class Image {
     @Column(name = "ID")
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_detail_id", referencedColumnName = "id")
     private ProductDetail productDetail;
 
+    @Column(name = "URL")
     private String url;
 }
