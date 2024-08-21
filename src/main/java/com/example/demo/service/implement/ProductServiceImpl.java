@@ -1,18 +1,32 @@
 package com.example.demo.service.implement;
 
+import com.example.demo.config.exception.BusinessException;
+import com.example.demo.entity.Image;
+import com.example.demo.entity.Product;
+import com.example.demo.entity.ProductDetail;
 import com.example.demo.model.DTO.ProductSalesDTO;
 import com.example.demo.model.DTO.RevenueDTO;
+import com.example.demo.model.info.PaginationInfo;
+import com.example.demo.model.request.*;
+import com.example.demo.model.response.ProductResponse;
+import com.example.demo.model.utilities.CommonUtil;
+import com.example.demo.repository.ProductDetailsRepository;
 import com.example.demo.repository.ProductRepository;
+import com.example.demo.repository.ProductSpecifications;
 import com.example.demo.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +34,11 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    @Autowired
+    ProductDetailsRepository productDetailsRepository;
+
+    @Autowired
+    ImageServiceImpl imageService;
 
     @Override
     public List<ProductSalesDTO> getTop10Products() {
@@ -94,5 +113,119 @@ public class ProductServiceImpl implements ProductService {
         return revenueList;
     }
 
+    @Override
+    public ProductResponse getProducts(ProductRequest request, int page, int size) throws BusinessException {
+        List<Product> allPro = productRepository.findAll(Sort.by(Sort.Direction.fromString("desc"), "id"));
+        if (CommonUtil.isNullOrEmpty(request.getName())) {
+            request.setName(""); // nếu request.getName() không có giá trị thì gán bằng giá trị rỗng
+        }
+        List<Product> filteredPro = allPro.stream()
+                .filter(product -> product.getProductName().contains(request.getName())).collect(Collectors.toList());
+        int start = Math.min(page * size, filteredPro.size());
+        int end = Math.min((page + 1) * size, filteredPro.size());
+        List<Product> pagedPro = filteredPro.subList(start, end);
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setProducts(pagedPro);
+
+        PaginationInfo paginationInfo = CommonUtil.getPaginationInfo(page, size, filteredPro.size());
+        productResponse.setPagination(paginationInfo);
+        return productResponse;
+    }
+
+    @Override
+    public AddProductRequest saveProduct(AddProductRequest productRequest) throws BusinessException {
+        Product product = new Product();
+        product.setProductName(productRequest.getProductName());
+        product.setBrand(productRequest.getBrand());
+        product.setSole(productRequest.getSole());
+        product.setStyle(productRequest.getStyle());
+        product.setMaterial(productRequest.getMaterial());
+        product.setCreatedBy(productRequest.getCreatedBy());
+        product.setCreatedDate(productRequest.getCreatedDate());
+        product.setModifiedBy(productRequest.getModifiedBy());
+        product.setModifiedDate(productRequest.getModifiedDate());
+        product.setDescription(productRequest.getDescription());
+        product.setStatus(productRequest.getStatus());
+        productRepository.save(product);
+        // lưu biến thể
+        Product productLast = productRepository.getLastProductId();
+        List<ProductDetailsRequest> detailsList = productRequest.getProductDetails();
+        for(ProductDetailsRequest d : detailsList){
+            ProductDetail details = new ProductDetail();
+            details.setSize(d.getSize());
+            details.setColor(d.getColor());
+            details.setProduct(productLast);
+            details.setQuantity(d.getQuantity());
+            details.setPrice(d.getPrice());
+            details.setDescription(d.getDescription());
+            details.setStatus(d.getStatus());
+
+            //lưu ảnh của biến thể
+            ProductDetail detailTemp = productDetailsRepository.save(details);
+            List<ImageRequest> imageList = d.getImages();
+            for(ImageRequest i: imageList){
+                Image image = new Image();
+                image.setUrl("assets/img/product/"+i.getName());
+                image.setProductDetail(detailTemp);
+                imageService.saveImage(image);
+            }
+        }
+        return productRequest;
+    }
+
+    @Override
+    public ProductResponse show(GetProductRequest request, int page, int size) throws BusinessException {
+
+        Specification<Product> spec = Specification.where(null);
+
+        if (request.getBrands() != null && !request.getBrands().isEmpty()) {
+            spec = spec.and(ProductSpecifications.hasBrands(request.getBrands()));
+        }
+        if (request.getStyles()!= null && !request.getStyles().isEmpty()) {
+            spec = spec.and(ProductSpecifications.hasStyles(request.getStyles()));
+        }
+        if (request.getSoles()!= null && !request.getSoles().isEmpty()) {
+            spec = spec.and(ProductSpecifications.hasSoles(request.getSoles()));
+        }
+        if (request.getMaterials()!= null && !request.getMaterials().isEmpty()) {
+            spec = spec.and(ProductSpecifications.hasMaterials(request.getMaterials()));
+        }
+        List<Product> listFilter = productRepository.findAll(spec);
+        // Xử lý phân trang
+        int start = Math.min(page * size, listFilter.size());
+        int end = Math.min((page + 1) * size, listFilter.size());
+        List<Product> pagePro = listFilter.subList(start, end);
+
+        // Tạo đối tượng ProductResponse
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setProducts(pagePro);
+
+        // Tạo đối tượng PaginationInfo và gán cho productResponse
+        PaginationInfo paginationInfo = CommonUtil.getPaginationInfo(page, size, listFilter.size());
+        productResponse.setPagination(paginationInfo);
+
+        return productResponse;
+    }
+
+    @Override
+    public Product deleteProduct(Integer id) throws BusinessException {
+        return null;
+    }
+
+    @Override
+    public Product getProduct(Integer id) throws BusinessException {
+        return null;
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    @Override
+    public Product changeStatus(Product product) throws BusinessException {
+        productRepository.save(product);
+        return product;
+    }
 
 }

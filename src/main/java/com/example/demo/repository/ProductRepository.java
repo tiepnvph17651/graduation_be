@@ -6,6 +6,7 @@ import com.example.demo.model.DTO.MonthlyRevenueDto;
 import com.example.demo.model.DTO.RevenueData;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Integer> {
+public interface ProductRepository extends JpaRepository<Product, Integer> , JpaSpecificationExecutor<Product> {
 
     @Query("SELECT pd.product.id,pd.product.productName, SUM(bd.quantity) AS totalQuantity " +
             "FROM BillDetail bd JOIN ProductDetail pd ON bd.productDetail.id = pd.id " +
@@ -65,5 +66,16 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             "GROUP BY p.productName ORDER BY SUM(bp.quantity) DESC")
     List<BestSellingProductDto> findBestSellingProducts(@Param("currentMonth") int currentMonth);
 
+    @Query("SELECT new com.example.demo.model.DTO.BestSellingProductDto(p.productName, SUM(bp.quantity)) " +
+            "FROM BillDetail bp JOIN bp.productDetail.product p JOIN bp.bill b " +
+            "WHERE (:productName IS NULL OR p.productName LIKE %:productName%) " +
+            "AND (:month IS NULL OR DATEPART(MONTH, b.dateOfPayment) = :month) " +
+            "GROUP BY p.productName")
+    List<BestSellingProductDto> findByProductNameAndMonth(
+            @Param("productName") String productName,
+            @Param("month") Integer month);
 
+
+    @Query("SELECT p FROM Product p WHERE p.id = (SELECT MAX(p2.id) FROM Product p2)")
+    Product getLastProductId();
 }

@@ -1,6 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.exception.BusinessException;
+import com.example.demo.entity.Product;
 import com.example.demo.model.DTO.*;
+import com.example.demo.model.request.*;
+import com.example.demo.model.response.ResponseData;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -23,6 +28,15 @@ public class ProductController {
     private final ProductService productService;
     @Autowired
     private ProductRepository productRepository;
+
+    @GetMapping("/filtered-statistics")
+    public List<BestSellingProductDto> getFilteredStatistics(
+            @RequestParam(value = "productName", required = false) String productName,
+            @RequestParam(value = "month", required = false) Integer month) {
+
+        // Thực hiện query với điều kiện lọc
+        return productRepository.findByProductNameAndMonth(productName, month);
+    }
 
     @GetMapping("/monthly-revenue")
     public List<RevenueData> getMonthlyRevenue() {
@@ -200,5 +214,37 @@ public class ProductController {
     @GetMapping("/statistical/year")
     public List<RevenueDTO> getStatistical3() {
         return productService.getRevenueByDayMonthYear();
+    }
+
+    @PostMapping("/get-product")
+    public ResponseEntity<ResponseData<Object>> getAllPro(@RequestBody ProductRequest request,
+                                                          @RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size) throws BusinessException {
+        return ResponseEntity.ok()
+                .body(new ResponseData<>().success(productService.getProducts(request, page, size)));
+    }
+
+    @PostMapping("/add-product")
+    public ResponseEntity<?> add(@RequestBody AddProductRequest request) throws BusinessException {
+        for (ProductDetailsRequest r:request.getProductDetails()){
+            for(ImageRequest r2: r.getImages()){
+                System.out.println(r2.getName());
+            }
+        }
+        return ResponseEntity.ok(productService.saveProduct(request));
+    }
+
+    @PostMapping("/show")
+    public ResponseEntity<ResponseData<Object>> show(@RequestBody GetProductRequest request,
+                                                     @RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "10") int size) throws BusinessException {
+        return ResponseEntity.ok()
+                .body(new ResponseData<>().success(productService.show(request, page, size)));
+    }
+    @PutMapping("/change-status/{id}")
+    public ResponseEntity<ResponseData<Object>> changeStatus(@RequestBody Product product) throws BusinessException {
+        System.out.println("trạng thái gửi từ fe: "+product.getStatus() + "id: " + product.getId());
+        return ResponseEntity.ok()
+                .body(new ResponseData<>().success(productService.changeStatus(product)));
     }
 }
