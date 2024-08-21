@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.config.exception.BusinessException;
+import com.example.demo.entity.Product;
 import com.example.demo.model.DTO.*;
 import com.example.demo.model.request.*;
 import com.example.demo.model.response.ResponseData;
@@ -22,11 +23,20 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
-@RequestMapping("/api/v1.0/auth/product")
+@RequestMapping("/api/v1.0/product")
 public class ProductController {
     private final ProductService productService;
     @Autowired
     private ProductRepository productRepository;
+
+    @GetMapping("/filtered-statistics")
+    public List<BestSellingProductDto> getFilteredStatistics(
+            @RequestParam(value = "productName", required = false) String productName,
+            @RequestParam(value = "month", required = false) Integer month) {
+
+        // Thực hiện query với điều kiện lọc
+        return productRepository.findByProductNameAndMonth(productName, month);
+    }
 
     @GetMapping("/monthly-revenue")
     public List<RevenueData> getMonthlyRevenue() {
@@ -230,5 +240,11 @@ public class ProductController {
                                                      @RequestParam(defaultValue = "10") int size) throws BusinessException {
         return ResponseEntity.ok()
                 .body(new ResponseData<>().success(productService.show(request, page, size)));
+    }
+    @PutMapping("/change-status/{id}")
+    public ResponseEntity<ResponseData<Object>> changeStatus(@RequestBody Product product) throws BusinessException {
+        System.out.println("trạng thái gửi từ fe: "+product.getStatus() + "id: " + product.getId());
+        return ResponseEntity.ok()
+                .body(new ResponseData<>().success(productService.changeStatus(product)));
     }
 }

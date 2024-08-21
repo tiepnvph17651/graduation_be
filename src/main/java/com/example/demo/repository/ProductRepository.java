@@ -66,6 +66,16 @@ public interface ProductRepository extends JpaRepository<Product, Integer> , Jpa
             "GROUP BY p.productName ORDER BY SUM(bp.quantity) DESC")
     List<BestSellingProductDto> findBestSellingProducts(@Param("currentMonth") int currentMonth);
 
+    @Query("SELECT new com.example.demo.model.DTO.BestSellingProductDto(p.productName, SUM(bp.quantity)) " +
+            "FROM BillDetail bp JOIN bp.productDetail.product p JOIN bp.bill b " +
+            "WHERE (:productName IS NULL OR p.productName LIKE %:productName%) " +
+            "AND (:month IS NULL OR DATEPART(MONTH, b.dateOfPayment) = :month) " +
+            "GROUP BY p.productName")
+    List<BestSellingProductDto> findByProductNameAndMonth(
+            @Param("productName") String productName,
+            @Param("month") Integer month);
+
+
     @Query("SELECT p FROM Product p WHERE p.id = (SELECT MAX(p2.id) FROM Product p2)")
     Product getLastProductId();
 }

@@ -66,7 +66,7 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
         ProductDetailResponse productDetailResponse = new ProductDetailResponse();
         ProductDetail productDetail = productDetailsRepository.findById(id).get();
         productDetailResponse.setProductDetail(productDetail);
-        productDetailResponse.setImages(imageRepository.findByProductDetails(productDetail));
+        productDetailResponse.setImages(imageRepository.findByProductDetail(productDetail));
         return productDetailResponse;
     }
 

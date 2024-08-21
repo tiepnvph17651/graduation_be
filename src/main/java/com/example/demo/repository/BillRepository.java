@@ -1,16 +1,18 @@
 package com.example.demo.repository;
 
 import com.example.demo.entity.Bill;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import com.example.demo.model.DTO.ProductDTO;
+import com.example.demo.model.result.StatisticsResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -79,5 +81,104 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
 
     Optional<Bill> findByCode(String code);
 
-    }
+
+     //Thống kê theo ngày
+    @Query("SELECT new com.example.demo.model.result.StatisticsResult(COUNT(b), SUM(b.totalAmount), " +
+            "SUM(CASE WHEN b.status = 'F' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN b.status = 'C' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN b.status = 'R' THEN 1 ELSE 0 END)) " +
+            "FROM Bill b WHERE b.dateOfPayment = CURRENT_DATE")
+    StatisticsResult getStatisticsByDay();
+
+
+    // Thống kê theo tuần (native query)
+    @Query(value = "SELECT COUNT(*), SUM(TOTAL_AMOUNT), \n" +
+            "       SUM(CASE WHEN STATUS = 'F' THEN 1 ELSE 0 END),\n" +
+            "       SUM(CASE WHEN STATUS = 'C' THEN 1 ELSE 0 END),\n" +
+            "       SUM(CASE WHEN STATUS = 'R' THEN 1 ELSE 0 END)\n" +
+            "FROM BILL\n" +
+            "WHERE DATE_OF_PAYMENT >= DATEADD(DAY, 1 - DATEPART(WEEKDAY, GETDATE()), CAST(GETDATE() AS DATE))\n" +
+            "AND DATE_OF_PAYMENT < DATEADD(DAY, 1 - DATEPART(WEEKDAY, GETDATE()) + 7, CAST(GETDATE() AS DATE))\n",
+            nativeQuery = true)
+    List<Object[]> getStatisticsByWeek();
+
+    @Query(value = "SELECT COUNT(*) AS totalCount, SUM(TOTAL_AMOUNT) AS totalAmount, " +
+            "SUM(CASE WHEN status = 'F' THEN 1 ELSE 0 END) AS completedCount, " +
+            "SUM(CASE WHEN status = 'C' THEN 1 ELSE 0 END) AS cancelledCount, " +
+            "SUM(CASE WHEN status = 'R' THEN 1 ELSE 0 END) AS returnedCount " +
+            "FROM BILL " +
+            "WHERE YEAR(DATE_OF_PAYMENT) = YEAR(GETDATE()) " +
+            "AND MONTH(DATE_OF_PAYMENT) = MONTH(GETDATE())", nativeQuery = true)
+    List<Object[]> getStatisticsByMonth();
+
+
+    // Thống kê theo năm
+    @Query(value = "SELECT COUNT(*) AS totalCount, SUM(TOTAL_AMOUNT) AS totalAmount, " +
+            "SUM(CASE WHEN status = 'F' THEN 1 ELSE 0 END) AS completedCount, " +
+            "SUM(CASE WHEN status = 'C' THEN 1 ELSE 0 END) AS cancelledCount, " +
+            "SUM(CASE WHEN status = 'R' THEN 1 ELSE 0 END) AS returnedCount " +
+            "FROM Bill " +
+            "WHERE YEAR(DATE_OF_PAYMENT) = YEAR(GETDATE())", nativeQuery = true)
+    List<Object[]> getStatisticsByYear();
+
+
+
+    //+----------------------lọc--------------------//
+    @Query("SELECT new com.example.demo.model.DTO.ProductDTO(p.productName, SUM(bd.quantity), pd.price) " +
+            "FROM BillDetail bd " +
+            "JOIN Product p ON bd.productDetail.product.id = p.id " +
+            "JOIN ProductDetail pd ON pd.product.id = p.id " +
+            "JOIN Bill b ON bd.bill.id = b.id " +
+            "WHERE b.dateOfPayment = CURRENT_DATE " +
+            "GROUP BY p.productName, pd.price " +
+            "ORDER BY SUM(bd.quantity) DESC")
+    List<ProductDTO> findTopSellingProductsByDay();
+
+    @Query("SELECT new com.example.demo.model.DTO.ProductDTO(p.productName, SUM(bd.quantity), pd.price) " +
+            "FROM BillDetail bd " +
+            "JOIN bd.productDetail pd " +
+            "JOIN pd.product p " +
+            "JOIN bd.bill b " +
+            "WHERE b.dateOfPayment >= :startDate " +
+            "AND b.dateOfPayment < :endDate " +
+            "GROUP BY p.productName, pd.price " +
+            "ORDER BY SUM(bd.quantity) DESC")
+    List<ProductDTO> findTopSellingProductsByWeek(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    @Query("SELECT new com.example.demo.model.DTO.ProductDTO(p.productName, SUM(bd.quantity), pd.price) " +
+            "FROM BillDetail bd " +
+            "JOIN Product p ON bd.productDetail.product.id = p.id " +
+            "JOIN ProductDetail pd ON pd.product.id = p.id " +
+            "JOIN Bill b ON bd.bill.id = b.id " +
+            "WHERE MONTH(b.dateOfPayment) = MONTH(CURRENT_DATE) " +
+            "AND YEAR(b.dateOfPayment) = YEAR(CURRENT_DATE) " +
+            "GROUP BY p.productName, pd.price " +
+            "ORDER BY SUM(bd.quantity) DESC")
+    List<ProductDTO> findTopSellingProductsByMonth();
+
+    @Query("SELECT new com.example.demo.model.DTO.ProductDTO(p.productName, SUM(bd.quantity), pd.price) " +
+            "FROM BillDetail bd " +
+            "JOIN Product p ON bd.productDetail.product.id = p.id " +
+            "JOIN ProductDetail pd ON pd.product.id = p.id " +
+            "JOIN Bill b ON bd.bill.id = b.id " +
+            "WHERE YEAR(b.dateOfPayment) = YEAR(CURRENT_DATE) " +
+            "GROUP BY p.productName, pd.price " +
+            "ORDER BY SUM(bd.quantity) DESC")
+    List<ProductDTO> findTopSellingProductsByYear();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 

@@ -21,7 +21,7 @@ public class ProductDetail {
     private Integer id;
 
     @Column(name = "QUANTITY")
-    private Integer quantity;
+    private Long quantity;
 
     @Column(name = "PRICE")
     private BigDecimal price;

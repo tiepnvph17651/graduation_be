@@ -222,4 +222,10 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll();
     }
 
+    @Override
+    public Product changeStatus(Product product) throws BusinessException {
+        productRepository.save(product);
+        return product;
+    }
+
 }

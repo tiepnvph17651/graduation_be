@@ -16,7 +16,7 @@ public class ProductDetailsRequest {
     private Integer id;
     private Size size;
     private Color color;
-    private int quantity;
+    private long quantity;
     private BigDecimal price;
     private String description;
     private int status;

@@ -27,4 +27,6 @@ public interface ProductService {
     List<Product> getAllProducts();
 
     ProductResponse show(GetProductRequest request, int page, int size) throws BusinessException;
+
+    Product changeStatus (Product product)throws BusinessException;
 }

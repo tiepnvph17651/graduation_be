@@ -59,4 +59,7 @@ public class Product {
 
     @Column(name = "STATUS")
     private Integer status;
+
+    @Column(name = "CODE")
+    private String code;
 }

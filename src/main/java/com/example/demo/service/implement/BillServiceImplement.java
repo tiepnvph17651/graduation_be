@@ -4,16 +4,15 @@ import com.example.demo.config.exception.BusinessException;
 import com.example.demo.entity.*;
 import com.example.demo.enums.ErrorCode;
 import com.example.demo.enums.OrderEnum;
+import com.example.demo.model.DTO.ProductDTO;
+import com.example.demo.model.DTO.StatisticsDto;
 import com.example.demo.model.info.PaginationInfo;
 import com.example.demo.model.request.ApproveBillRequest;
 import com.example.demo.model.request.BillsRequest;
 import com.example.demo.model.request.GetBillRequest;
 import com.example.demo.model.response.BillsResponse;
 import com.example.demo.model.response.DetailOrderResponse;
-import com.example.demo.model.result.BillResult;
-import com.example.demo.model.result.OrderDetailResult;
-import com.example.demo.model.result.OrderGeneralResult;
-import com.example.demo.model.result.SubOrderResult;
+import com.example.demo.model.result.*;
 import com.example.demo.model.utilities.CommonUtil;
 import com.example.demo.model.utilities.Constant;
 import com.example.demo.model.utilities.FakeData;
@@ -31,8 +30,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,8 +43,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class BillServiceImplement implements BillService {
-    @PersistenceContext
-    private EntityManager entityManager;
+
     private final BillRepository billRepository;
     private final DetailBillRepository detailBillRepository;
     private final ProductRepository productRepository;
@@ -53,20 +55,9 @@ public class BillServiceImplement implements BillService {
         log.info("getBills: {}", CommonUtil.beanToString(request));
         BillsResponse response = new BillsResponse();
         List<BillResult> results = new ArrayList<>();
-//        String code = request.getCode();
-//        String numberPhone = request.getNumberPhone();
-//        String customerName = request.getCustomerName();
         String status = request.getStatus();
         String keyword = request.getKeyword();
-//        if (CommonUtil.isNullOrEmpty(code)) {
-//            code = "";
-//        }
-//        if (CommonUtil.isNullOrEmpty(numberPhone)) {
-//            numberPhone = "";
-//        }
-//        if (CommonUtil.isNullOrEmpty(customerName)) {
-//            customerName = "";
-        //}
+
         if (CommonUtil.isNullOrEmpty(keyword)) {
             keyword = "";
         }
@@ -77,7 +68,6 @@ public class BillServiceImplement implements BillService {
             Sort sort = Sort.by(Sort.Direction.fromString(sortType), sortField);
             pageable = PageRequest.of(page, size, sort);
         }
-        // Page<Bill> bills = billRepository.getAll(code, customerName, numberPhone, status, pageable);
         Page<Bill> bills = billRepository.searchBills(keyword, status, pageable);
         for (Bill bill : bills) {
             BillResult result = new BillResult();
@@ -351,5 +341,95 @@ public class BillServiceImplement implements BillService {
         }
         this.detailProductRepository.saveAll(detailProducts);
         productRepository.saveAll(products);
+    }
+
+    public StatisticsDto getStatisticsByDay() {
+        StatisticsResult result = billRepository.getStatisticsByDay();
+        return mapToDto(result);
+    }
+
+    public StatisticsResult getWeeklyStatistics() {
+        List<Object[]> results = billRepository.getStatisticsByWeek();
+        if (results.isEmpty()) {
+            return new StatisticsResult();
+        }
+
+        Object[] result = results.get(0); // Chỉ có một dòng dữ liệu
+        BigDecimal sumTotalAmount = BigDecimal.valueOf(((Number) result[1]).doubleValue());
+        return new StatisticsResult(
+                ((Number) result[0]).longValue(), // COUNT(*)
+                sumTotalAmount,
+                ((Number) result[2]).longValue(), // SUM(CASE WHEN STATUS = 'F' THEN 1 ELSE 0 END)
+                ((Number) result[3]).longValue(), // SUM(CASE WHEN STATUS = 'C' THEN 1 ELSE 0 END)
+                ((Number) result[4]).longValue()  // SUM(CASE WHEN STATUS = 'R' THEN 1 ELSE 0 END)
+        );
+    }
+
+
+    public StatisticsDto getStatisticsByMonth() {
+        List<Object[]> results = billRepository.getStatisticsByMonth();
+        if (results.isEmpty()) {
+            return new StatisticsDto();
+        }
+
+        Object[] result = results.get(0); // Chỉ có một dòng dữ liệu
+        BigDecimal sumTotalAmount = BigDecimal.valueOf(((Number) result[1]).doubleValue());
+        StatisticsResult statisticsResult = new StatisticsResult(
+                ((Number) result[0]).longValue(), // COUNT(*)
+                sumTotalAmount,
+                ((Number) result[2]).longValue(), // SUM(CASE WHEN status = 'F' THEN 1 ELSE 0 END)
+                ((Number) result[3]).longValue(), // SUM(CASE WHEN status = 'C' THEN 1 ELSE 0 END)
+                ((Number) result[4]).longValue()  // SUM(CASE WHEN status = 'R' THEN 1 ELSE 0 END)
+        );
+        return mapToDto(statisticsResult);
+    }
+
+
+    public StatisticsDto getStatisticsByYear() {
+        List<Object[]> results = billRepository.getStatisticsByYear();
+        if (results.isEmpty()) {
+            return new StatisticsDto();
+        }
+
+        Object[] result = results.get(0); // Chỉ có một dòng dữ liệu
+        BigDecimal sumTotalAmount = BigDecimal.valueOf(((Number) result[1]).doubleValue());
+        StatisticsResult statisticsResult = new StatisticsResult(
+                ((Number) result[0]).longValue(), // COUNT(*)
+                sumTotalAmount,
+                ((Number) result[2]).longValue(), // SUM(CASE WHEN status = 'F' THEN 1 ELSE 0 END)
+                ((Number) result[3]).longValue(), // SUM(CASE WHEN status = 'C' THEN 1 ELSE 0 END)
+                ((Number) result[4]).longValue()  // SUM(CASE WHEN status = 'R' THEN 1 ELSE 0 END)
+        );
+        return mapToDto(statisticsResult);
+    }
+
+    private StatisticsDto mapToDto(StatisticsResult result) {
+        StatisticsDto dto = new StatisticsDto();
+
+        // Kiểm tra độ dài mảng trước khi truy cập
+        dto.setTotalBills(result.getTotalBills());
+        dto.setTotalAmount(result.getTotalAmount());
+        dto.setSuccessOrders(result.getSuccessOrders());
+        dto.setCanceledOrders(result.getCanceledOrders());
+        dto.setReturnedOrders(result.getReturnedOrders());
+        //dto.setRevenue(result.getRevenue());
+
+        return dto;
+    }
+    //+-----------------------------------------+//
+    public List<ProductDTO> getTopSellingProductsByDay() {
+        return billRepository.findTopSellingProductsByDay();
+    }
+
+    public List<ProductDTO> getTopSellingProductsByWeek(Date startDate, Date endDate) {
+        return billRepository.findTopSellingProductsByWeek(startDate, endDate);
+    }
+
+    public List<ProductDTO> getTopSellingProductsByMonth() {
+        return billRepository.findTopSellingProductsByMonth();
+    }
+
+    public List<ProductDTO> getTopSellingProductsByYear() {
+        return billRepository.findTopSellingProductsByYear();
     }
 }
