@@ -214,7 +214,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProduct(Integer id) throws BusinessException {
-        return null;
+        return productRepository.findById(id).get();
     }
 
     @Override
@@ -222,4 +222,18 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll();
     }
 
+<<<<<<< Updated upstream
+=======
+    @Override
+    public Product changeStatus(Product product) throws BusinessException {
+        productRepository.save(product);
+        return product;
+    }
+
+    @Override
+    public List<Product> getTop4NewestProducts() throws BusinessException {
+        return productRepository.findTop4ByOrderByCreatedDateDesc();
+    }
+
+>>>>>>> Stashed changes
 }

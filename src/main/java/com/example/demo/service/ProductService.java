@@ -27,4 +27,11 @@ public interface ProductService {
     List<Product> getAllProducts();
 
     ProductResponse show(GetProductRequest request, int page, int size) throws BusinessException;
+<<<<<<< Updated upstream
+=======
+
+    Product changeStatus (Product product)throws BusinessException;
+
+    List<Product> getTop4NewestProducts () throws BusinessException;
+>>>>>>> Stashed changes
 }

@@ -68,4 +68,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> , Jpa
 
     @Query("SELECT p FROM Product p WHERE p.id = (SELECT MAX(p2.id) FROM Product p2)")
     Product getLastProductId();
+
+    List<Product> findTop4ByOrderByCreatedDateDesc();
 }

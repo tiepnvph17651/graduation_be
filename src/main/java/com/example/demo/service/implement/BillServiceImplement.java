@@ -134,7 +134,7 @@ public class BillServiceImplement implements BillService {
             subOrderResult.setQuantity(detailBill.getQuantity());
             subOrderResult.setPrice(detailBill.getPrice());
             //subOrderResult.setProductImage(detailBill.getProductDetail().getProduct().);
-            subOrderResult.setProductCode(detailBill.getProductDetail().getProduct().getCode());
+//            subOrderResult.setProductCode(detailBill.getProductDetail().getProduct().getCode());
             subOrderResult.setSize(detailBill.getProductDetail().getSize().getName());
             subOrderResults.add(subOrderResult);
         }

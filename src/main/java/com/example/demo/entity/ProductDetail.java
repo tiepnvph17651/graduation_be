@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Setter
 @Getter
@@ -42,5 +45,14 @@ public class ProductDetail {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "PRODUCT_ID", referencedColumnName = "ID")
+    @JsonBackReference
     private Product product;
+
+    @OneToMany(mappedBy = "productDetail")
+    @JsonManagedReference
+    List<Image> imageList;
+
+//    @OneToMany(mappedBy = "productDetail")
+//    @JsonManagedReference
+//    List<CartItem> cartItems;
 }

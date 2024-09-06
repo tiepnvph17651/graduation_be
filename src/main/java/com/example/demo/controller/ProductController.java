@@ -231,4 +231,15 @@ public class ProductController {
         return ResponseEntity.ok()
                 .body(new ResponseData<>().success(productService.show(request, page, size)));
     }
+<<<<<<< Updated upstream
+=======
+    @PutMapping("/change-status/{id}")
+    public ResponseEntity<ResponseData<Object>> changeStatus(@RequestBody Product product) throws BusinessException {
+        System.out.println("trạng thái gửi từ fe: "+product.getStatus() + "id: " + product.getId());
+        return ResponseEntity.ok()
+                .body(new ResponseData<>().success(productService.changeStatus(product)));
+    }
+
+
+>>>>>>> Stashed changes
 }
