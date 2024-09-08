@@ -20,7 +20,7 @@ public class BillDetail {
     @Column(name = "ID")
     private Integer id;
     @Column(name = "QUANTITY")
-    private Long quantity;
+    private Integer quantity;
     @Column(name = "PRICE")
     private BigDecimal price;
     @Column(name = "STATUS")

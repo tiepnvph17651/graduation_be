@@ -19,8 +19,8 @@ public class ImageServiceImpl implements ImageService {
     @Autowired
     ImageRepository imageRepository;
 
-    @Value("${file.url-dir}")
-    private String urlDir;
+//    @Value("${file.url-dir}")
+//    private String urlDir;
 
     //    @Override
 //    public List<Integer> saveImage(MultipartFile[] files) throws BusinessException {

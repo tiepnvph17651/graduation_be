@@ -35,10 +35,10 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     @Autowired
-    ProductDetailsRepository productDetailsRepository;
+    private ProductDetailsRepository productDetailsRepository;
 
     @Autowired
-    ImageServiceImpl imageService;
+    private ImageServiceImpl imageService;
 
     @Override
     public List<ProductSalesDTO> getTop10Products() {
@@ -222,8 +222,6 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll();
     }
 
-<<<<<<< Updated upstream
-=======
     @Override
     public Product changeStatus(Product product) throws BusinessException {
         productRepository.save(product);
@@ -235,5 +233,4 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findTop4ByOrderByCreatedDateDesc();
     }
 
->>>>>>> Stashed changes
 }

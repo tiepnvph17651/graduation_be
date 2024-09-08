@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.config.exception.BusinessException;
+import com.example.demo.entity.Product;
 import com.example.demo.model.DTO.*;
 import com.example.demo.model.request.*;
 import com.example.demo.model.response.ResponseData;
@@ -22,7 +23,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
-@RequestMapping("/api/v1.0/auth/product")
+@RequestMapping("/api/v1.0/product")
 public class ProductController {
     private final ProductService productService;
     @Autowired
@@ -206,6 +207,7 @@ public class ProductController {
         return productService.getRevenueByDayMonthYear();
     }
 
+    //Lấy danh sách product
     @PostMapping("/get-product")
     public ResponseEntity<ResponseData<Object>> getAllPro(@RequestBody ProductRequest request,
                                                           @RequestParam(defaultValue = "0") int page,
@@ -231,8 +233,7 @@ public class ProductController {
         return ResponseEntity.ok()
                 .body(new ResponseData<>().success(productService.show(request, page, size)));
     }
-<<<<<<< Updated upstream
-=======
+
     @PutMapping("/change-status/{id}")
     public ResponseEntity<ResponseData<Object>> changeStatus(@RequestBody Product product) throws BusinessException {
         System.out.println("trạng thái gửi từ fe: "+product.getStatus() + "id: " + product.getId());
@@ -241,5 +242,4 @@ public class ProductController {
     }
 
 
->>>>>>> Stashed changes
 }

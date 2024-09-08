@@ -61,13 +61,11 @@ public class Product {
 
     @Column(name = "STATUS")
     private Integer status;
-<<<<<<< Updated upstream
-=======
+
 
     //    @Column(name = "CODE")
 //    private String code;
     @OneToMany(mappedBy = "product")
     @JsonManagedReference
     List<ProductDetail> productDetailList;
->>>>>>> Stashed changes
 }
