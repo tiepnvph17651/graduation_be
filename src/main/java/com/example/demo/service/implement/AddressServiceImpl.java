@@ -43,12 +43,12 @@ public class AddressServiceImpl implements AddressService {
         address.setAddress(request.getAddress());
         address.setFullAddress(request.getFulladdress());
         address.setNumberPhone(request.getNumberPhone());
-        address.setCityCode(request.getCityCode());
-        address.setCityName(request.getCityName());
+        address.setProvinceID(request.getProvinceID());
+        address.setProvinceName(request.getProvinceName());
         address.setWardCode(request.getWardCode());
         address.setWardName(request.getWardName());
-        address.setStreetCode(request.getStreetCode());
-        address.setStreetName(request.getStreetName());
+        address.setDistrictID(request.getDistrictID());
+        address.setDistrictName(request.getDistrictName());
         address.setAddressType(request.getAddressType());
         address.setIsDefault(request.getIsDefault());
         address.setCreatedBy(username);
@@ -80,12 +80,12 @@ public class AddressServiceImpl implements AddressService {
         address.setAddress(request.getAddress());
         address.setFullAddress(request.getFulladdress());
         address.setNumberPhone(request.getNumberPhone());
-        address.setCityCode(request.getCityCode());
-        address.setCityName(request.getCityName());
+        address.setProvinceID(request.getProvinceID());
+        address.setProvinceName(request.getProvinceName());
         address.setWardCode(request.getWardCode());
         address.setWardName(request.getWardName());
-        address.setStreetCode(request.getStreetCode());
-        address.setStreetName(request.getStreetName());
+        address.setDistrictID(request.getDistrictID());
+        address.setDistrictName(request.getDistrictName());
         address.setAddressType(request.getAddressType());
         address.setIsDefault(request.getIsDefault());
         address.setModifiedBy(username);
@@ -108,20 +108,17 @@ public class AddressServiceImpl implements AddressService {
             // Kiểm tra và lấy thông tin address từ request.getId()
             address = addressRepository.findById(request.getId())
                      .orElseThrow(() -> new BusinessException(ErrorCode.ADDRESS_NOT_FOUND));
-//            if (!address.getUser().getId().equals(userID)) {
-//                throw new BusinessException(ErrorCode.UNAUTHORIZED_ACCESS);
-//            }
         }
         address.setFullName(request.getFullName());
         address.setAddress(request.getAddress());
         address.setFullAddress(request.getFulladdress());
         address.setNumberPhone(request.getNumberPhone());
-        address.setCityCode(request.getCityCode());
-        address.setCityName(request.getCityName());
+        address.setProvinceID(request.getProvinceID());
+        address.setProvinceName(request.getProvinceName());
         address.setWardCode(request.getWardCode());
         address.setWardName(request.getWardName());
-        address.setStreetCode(request.getStreetCode());
-        address.setStreetName(request.getStreetName());
+        address.setDistrictID(request.getDistrictID());
+        address.setDistrictName(request.getDistrictName());
         address.setAddressType(request.getAddressType());
         address.setIsDefault(request.getIsDefault());
         address.setModifiedBy(user.getUsername());
@@ -138,16 +135,14 @@ public class AddressServiceImpl implements AddressService {
         response.setAddress(address.getAddress());
         response.setFulladdress(address.getFulladdress());
         response.setNumberPhone(address.getNumberPhone());
-        response.setCityCode(address.getCityCode());
-        response.setCityName(address.getCityName());
+        response.setProvinceID(address.getProvinceID());
+        response.setProvinceName(address.getProvinceName());
         response.setWardCode(address.getWardCode());
         response.setWardName(address.getWardName());
-        response.setStreetCode(address.getStreetCode());
-        response.setStreetName(address.getStreetName());
+        response.setDistrictID(address.getDistrictID());
+        response.setDistrictName(address.getDistrictName());
         response.setAddressType(address.getAddressType());
         response.setIsDefault(address.getIsDefault());
-//        response.setCreatedBy(username);
-//        response.setModifiedBy(username);
         return response;
     }
 
@@ -158,12 +153,12 @@ public class AddressServiceImpl implements AddressService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.ADDRESS_NOT_FOUND));
         address.setFullName(request.getFullName());
         address.setNumberPhone(request.getNumberPhone());
-        address.setCityCode(request.getCityCode());
-        address.setCityName(request.getCityName());
+        address.setProvinceID(request.getProvinceID());
+        address.setProvinceName(request.getProvinceName());
         address.setWardCode(request.getWardCode());
         address.setWardName(request.getWardName());
-        address.setStreetCode(request.getStreetCode());
-        address.setStreetName(request.getStreetName());
+        address.setDistrictID(request.getDistrictID());
+        address.setDistrictName(request.getDistrictName());
         address.setFullAddress(request.getFulladdress());
         address.setAddressType(request.getAddressType());
         address.setCreatedBy(username);
@@ -196,12 +191,12 @@ public class AddressServiceImpl implements AddressService {
                 .fullName(address.getFullName())
                 .id(address.getId())
                 .addressType(address.getAddressType())
-                .cityCode(address.getCityCode())
-                .cityName(address.getCityName())
+                .provinceID(address.getProvinceID())
+                .provinceName(address.getProvinceName())
                 .wardCode(address.getWardCode())
                 .wardName(address.getWardName())
-                .streetCode(address.getStreetCode())
-                .streetName(address.getStreetName())
+                .districtID(address.getDistrictID())
+                .districtName(address.getDistrictName())
                 .isDefault(address.getIsDefault())
                 .build();
     }

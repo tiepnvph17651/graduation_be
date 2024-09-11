@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,18 +13,24 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "IMAGE")
-public class Image {
+@Table(name = "CartItem")
+public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_detail_id", referencedColumnName = "id")
+    @JoinColumn(name = "cart_id", referencedColumnName = "ID")
     @JsonBackReference
+    private Cart cart;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "productDetail_id", referencedColumnName = "ID")
+    @JsonManagedReference
     private ProductDetail productDetail;
 
-    @Column(name = "URL")
-    private String url;
+    @Column(name = "quantity")
+    private Integer quantity;
+
 }

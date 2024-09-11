@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
@@ -62,4 +64,8 @@ public class Product {
 
     @Column(name = "CODE")
     private String code;
+
+    @OneToMany(mappedBy = "product")
+    @JsonManagedReference
+    List<ProductDetail> productDetailList;
 }

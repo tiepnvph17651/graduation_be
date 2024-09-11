@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.model.DTO.ProductDTO;
 import com.example.demo.model.DTO.StatisticsDto;
 import com.example.demo.model.result.StatisticsResult;
-import com.example.demo.service.BillService;
 import com.example.demo.service.implement.BillServiceImplement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -66,5 +64,12 @@ public class StatisticsController {
     @GetMapping("/top-selling-products/this-year")
     public List<ProductDTO> getTopSellingProductsByYear() {
         return billService.getTopSellingProductsByYear();
+    }
+
+    @GetMapping("/top-selling-products/custom-range")
+    public List<ProductDTO> getTopSellingProductsByCustomRange(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
+        return billService.getTopSellingProductsByCustomRange(startDate, endDate);
     }
 }

@@ -5,12 +5,13 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class PaymentResult {
-    private int id;
-    private int detailProductId;
-    private long quantity;
+public class CartResult {
+    private Integer detailCartId;
+    private Integer detailProductId;
+    private String productName;
+    private Integer quantity;
     private BigDecimal price;
-    private String name;
+    private Integer total;
     private String image;
     private String size;
     private String brand;

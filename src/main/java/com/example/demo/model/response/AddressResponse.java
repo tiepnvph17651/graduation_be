@@ -14,10 +14,10 @@ public class AddressResponse {
     private String fullName;
     private Boolean isDefault;
     private String addressType;
-    private Integer streetCode;
-    private String streetName;
-    private Integer wardCode;
+    private Integer districtID;
+    private String districtName;
+    private String wardCode;
     private String wardName;
-    private Integer cityCode;
-    private String cityName;
+    private Integer provinceID;
+    private String provinceName;
 }

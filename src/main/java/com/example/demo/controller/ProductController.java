@@ -247,4 +247,15 @@ public class ProductController {
         return ResponseEntity.ok()
                 .body(new ResponseData<>().success(productService.changeStatus(product)));
     }
+    @GetMapping("/findTop4New")
+    public ResponseEntity<ResponseData<Object>> get() throws BusinessException {
+        return ResponseEntity.ok()
+                .body(new ResponseData<>().success(productService.getTop4NewestProducts()));
+    }
+
+    @GetMapping("/product/{id}")
+    public ResponseEntity<ResponseData<Object>> getDetail(@PathVariable("id") Integer id) throws BusinessException {
+        return ResponseEntity.ok()
+                .body(new ResponseData<>().success(productService.getProduct(id)));
+    }
 }

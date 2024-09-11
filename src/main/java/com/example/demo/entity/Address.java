@@ -35,22 +35,22 @@ public class Address {
     private String addressType;
 
     @Column(name = "STREET_CODE")
-    private Integer streetCode;
+    private Integer districtID;
 
     @Column(name = "STREET_NAME")
-    private String streetName;
+    private String districtName;
 
     @Column(name = "WARD_CODE")
-    private Integer wardCode;
+    private String wardCode;
 
     @Column(name = "WARD_NAME")
     private String wardName;
 
     @Column(name = "CITY_CODE")
-    private Integer cityCode;
+    private Integer provinceID;
 
     @Column(name = "CITY_NAME")
-    private String cityName;
+    private String provinceName;
 
     @CreationTimestamp
     @Column(name = "CREATED_DATE", updatable = false)
@@ -77,7 +77,7 @@ public class Address {
     private User user;
 
     public String getFulladdress() {
-        return this.address + "," + this.cityName + "," + this.wardName + "," + this.streetName;
+        return this.address + "," + this.provinceName + "," + this.districtName + "," + this.wardName;
     }
 
 }

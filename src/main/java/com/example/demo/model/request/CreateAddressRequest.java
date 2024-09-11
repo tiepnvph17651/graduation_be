@@ -1,5 +1,6 @@
 package com.example.demo.model.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -29,31 +30,37 @@ public class CreateAddressRequest {
     private String numberPhone;
 
     @NotNull(message = "is.not.null")
-    private Integer streetCode;
+    @JsonProperty("DistrictID")
+    private Integer districtID;
 
     @NotBlank(message = "is.not.blank")
-    private String streetName;
+    @JsonProperty("DistrictName")
+    private String districtName;
 
     @NotNull(message = "is.not.null")
-    private Integer wardCode;
+    @JsonProperty("WardCode")
+    private String wardCode;
 
     @NotBlank(message = "is.not.blank")
+    @JsonProperty("WardName")
     private String wardName;
 
     @NotNull(message = "is.not.null")
-    private Integer cityCode;
+    @JsonProperty("ProvinceID")
+    private Integer provinceID;
 
     @NotBlank(message = "is.not.blank")
-    private String cityName;
+    @JsonProperty("ProvinceName")
+    private String provinceName;
 
-    private String fulladdress;
+    private String fullAddress;
 
     private String addressType;
 
     private Boolean isDefault = false;
 
     public String getFulladdress() {
-        return this.address + "," + this.cityName + "," + this.wardName + "," + this.streetName;
+        return this.address + "," + this.provinceName + "," + this.wardName + "," + this.districtName;
     }
 
 }

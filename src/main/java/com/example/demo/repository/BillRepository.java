@@ -166,6 +166,15 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
             "ORDER BY SUM(bd.quantity) DESC")
     List<ProductDTO> findTopSellingProductsByYear();
 
+    @Query("SELECT new com.example.demo.model.DTO.ProductDTO(p.productName, SUM(bd.quantity), pd.price) " +
+            "FROM BillDetail bd " +
+            "JOIN Product p ON bd.productDetail.product.id = p.id " +
+            "JOIN ProductDetail pd ON pd.product.id = p.id " +
+            "JOIN Bill b ON bd.bill.id = b.id " +
+            "WHERE b.dateOfPayment BETWEEN :startDate AND :endDate " +
+            "GROUP BY p.productName, pd.price " +
+            "ORDER BY SUM(bd.quantity) DESC")
+    List<ProductDTO> findTopSellingProductsByCustomRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
 
 

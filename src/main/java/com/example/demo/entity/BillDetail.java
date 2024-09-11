@@ -33,4 +33,13 @@ public class BillDetail {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_PRODUCT_DETAIL",referencedColumnName = "ID")
     private ProductDetail productDetail;
+
+    @Column(name = "PRODUCT_IMAGE")
+    private String productImage;
+
+    @Column(name = "SIZE")
+    private String size;
+
+    @Column(name = "PRODUCT_NAME") // Thêm thuộc tính này
+    private String productName;
 }

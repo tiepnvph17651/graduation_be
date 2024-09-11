@@ -22,7 +22,7 @@ public class FakeData {
     public static List<ShippingHistory> getParentShippingHistory(String username, Integer billId) {
         LocalDateTime dateTime = LocalDateTime.now();
         return List.of(
-                new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đặt hàng", "Đơn hàng đã được đặt thanh công", null, dateTime, dateTime),
+                new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đặt hàng", "Đơn hàng đã được đặt thành công", null, dateTime, dateTime),
                 new ShippingHistory(null, billId,null, OrderEnum.PENDING.getValue(), username, username, "Đang xử lý", "Đơn hàng đang chờ xác nhận", null, dateTime.plusHours(2), dateTime.plusHours(2)),
                 new ShippingHistory(null, billId,null, OrderEnum.PENDING.getValue(), username, username, "Đang giao hàng", "Đơn hàng đã được chuyển đến đơn vị vận chuyển và đang trên đường tới khách hàng", null, dateTime.plusHours(3), dateTime.plusHours(4)),
                 new ShippingHistory(null, billId,null, OrderEnum.PENDING.getValue(), username, username, "Đã nhận hàng", "Khách hàng đã nhận được hàng", null, dateTime.plusHours(5), dateTime.plusHours(5)),

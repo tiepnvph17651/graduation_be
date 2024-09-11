@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.model.utilities.CommonUtil;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -79,17 +80,20 @@ public class Bill {
     @Column(name = "STATUS_PAYMENT")
     private String paymentStatus;
 
+    @Column(name = "ADDRESS_METHOD")
+    private String addressMethod;
+
     private String note;
     private BigDecimal price;
 
     @PrePersist
     public void prePersist() {
         // Generate code only if it is null or empty
-//        if (CommonUtil.isNullOrEmpty(this.code)) {
-//            // Use current timestamp to ensure uniqueness
-//            long timestamp = System.currentTimeMillis();
-//            this.code = "PM" + String.format("%06d", timestamp % 1000000);
-//        }
+        if (CommonUtil.isNullOrEmpty(this.code)) {
+            // Use current timestamp to ensure uniqueness
+            long timestamp = System.currentTimeMillis();
+            this.code = "PM" + String.format("%06d", timestamp % 1000000);
+        }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.DAY_OF_MONTH, 3); // Ví dụ: thêm 3 ngày từ ngày hiện tại

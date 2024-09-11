@@ -432,4 +432,8 @@ public class BillServiceImplement implements BillService {
     public List<ProductDTO> getTopSellingProductsByYear() {
         return billRepository.findTopSellingProductsByYear();
     }
+
+    public List<ProductDTO> getTopSellingProductsByCustomRange(Date startDate, Date endDate) {
+        return billRepository.findTopSellingProductsByCustomRange(startDate, endDate);
+    }
 }
