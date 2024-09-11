@@ -46,9 +46,10 @@ public class ProductDetailController {
                 .body(new ResponseData<>().success(productDetailsService.getProductDetail(id)));
     }
 
-    @PutMapping("/update-productDetail")
-    public ResponseEntity<ResponseData<Object>> updatePD(@RequestBody ProductDetail detail) throws BusinessException {
+    @PutMapping("/update-productDetail/{id}")
+    public ResponseEntity<ResponseData<Object>> updatePD(@PathVariable("id") Integer idPro,
+            @RequestBody ProductDetail detail) throws BusinessException {
         return ResponseEntity.ok()
-                .body(new ResponseData<>().success(productDetailsService.updatePD(detail)));
+                .body(new ResponseData<>().success(productDetailsService.updatePD(idPro,detail)));
     }
 }

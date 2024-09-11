@@ -84,6 +84,8 @@ public class Bill {
     private String addressMethod;
 
     private String note;
+
+    @Column(name="totalPricePro")
     private BigDecimal price;
 
     @PrePersist

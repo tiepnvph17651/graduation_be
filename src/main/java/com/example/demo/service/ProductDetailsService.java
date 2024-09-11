@@ -19,5 +19,5 @@ public interface ProductDetailsService {
 
     List<ProductDetail> updateAll(List<ProductDetail> productDetails) throws BusinessException;
 
-    ProductDetail updatePD(ProductDetail productDetail) throws BusinessException;
+    ProductDetail updatePD(Integer idPro,ProductDetail productDetail) throws BusinessException;
 }

@@ -29,6 +29,6 @@ public class Cart {
 //    private Date createdDate;
 
     @OneToMany(mappedBy = "cart")
-    @JsonManagedReference
+//    @JsonManagedReference
     List<CartItem> cartItems;
 }

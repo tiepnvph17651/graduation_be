@@ -1,6 +1,7 @@
 package com.example.demo.service.implement;
 
 import com.example.demo.config.exception.BusinessException;
+import com.example.demo.entity.Product;
 import com.example.demo.entity.ProductDetail;
 import com.example.demo.model.info.PaginationInfo;
 import com.example.demo.model.request.ProductDetailRequest;
@@ -71,8 +72,13 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
     }
 
     @Override
-    public ProductDetail updatePD(ProductDetail productDetail) throws BusinessException {
-        return productDetailsRepository.save(productDetail);
+    public ProductDetail updatePD(Integer idPro,ProductDetail productDetail) throws BusinessException {
+        ProductDetail productDetail1 = productDetail;
+        Product product = productRepository.findById(idPro).get();
+        productDetail1.setProduct(product);
+        System.out.println(productDetail1.getProduct().getId());
+        return productDetailsRepository.save(productDetail1);
+//        return productDetail;
     }
 
 

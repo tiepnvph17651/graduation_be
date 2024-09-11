@@ -62,10 +62,10 @@ public class Product {
     @Column(name = "STATUS")
     private Integer status;
 
-    @Column(name = "CODE")
-    private String code;
+//    @Column(name = "CODE")
+//    private String code;
 
     @OneToMany(mappedBy = "product")
-    @JsonManagedReference
+//    @JsonManagedReference
     List<ProductDetail> productDetailList;
 }

@@ -1,11 +1,14 @@
 package com.example.demo.controller;
 
 import com.example.demo.config.exception.BusinessException;
+import com.example.demo.entity.CartItem;
 import com.example.demo.model.request.CreatePaymentRequest;
+import com.example.demo.model.request.PayRequest;
 import com.example.demo.model.request.PaymentRequest;
 import com.example.demo.model.response.ResponseData;
 import com.example.demo.service.PaymentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,10 +31,15 @@ public class PaymentController extends BaseController {
                 .body(new ResponseData<>().success(paymentService.getPayment(code)));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<ResponseData<Object>> createPayment(@RequestBody CreatePaymentRequest request) throws BusinessException {
+    @PostMapping(value = "/create")
+    public ResponseEntity<ResponseData<Object>> createPayment(@RequestBody PayRequest request) throws BusinessException {
+        paymentService.create(request, this.getUsername());
+        for(CartItem i: request.getCartItems()){
+            System.out.println("ID:"+i.getId());
+        }
+        System.out.println(this.getUsername());
         return ResponseEntity.ok()
-                .body(new ResponseData<>().success(paymentService.create(request, this.getUsername())));
+                .body(new ResponseData<>().success(""));
     }
 
     @PostMapping("/send")
