@@ -8,7 +8,6 @@ import com.example.demo.model.DTO.ProductDTO;
 import com.example.demo.model.DTO.StatisticsDto;
 import com.example.demo.model.info.PaginationInfo;
 import com.example.demo.model.request.ApproveBillRequest;
-import com.example.demo.model.request.BillsRequest;
 import com.example.demo.model.request.GetBillRequest;
 import com.example.demo.model.response.BillsResponse;
 import com.example.demo.model.response.DetailOrderResponse;
@@ -18,9 +17,6 @@ import com.example.demo.model.utilities.Constant;
 import com.example.demo.model.utilities.FakeData;
 import com.example.demo.repository.*;
 import com.example.demo.service.BillService;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.LockModeType;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -31,9 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -75,7 +69,7 @@ public class BillServiceImplement implements BillService {
             result.setCode(bill.getCode());
             result.setCustomerName(bill.getRecipientName());
             result.setNumberPhone(bill.getRecipientPhoneNumber());
-            result.setTotal(bill.getTotalAmount());
+            result.setTotal(bill.getTotal());
             result.setStatus(CommonUtil.getStatusVn(bill.getStatus()));
             result.setCreatedBy(bill.getCreatedBy());
             result.setCreatedDate(CommonUtil.date2Str(bill.getCreatedDate()));
@@ -123,7 +117,7 @@ public class BillServiceImplement implements BillService {
             subOrderResult.setProductName(detailBill.getProductDetail().getProduct().getProductName());
             subOrderResult.setQuantity(detailBill.getQuantity());
             subOrderResult.setPrice(detailBill.getPrice());
-            //subOrderResult.setProductImage(detailBill.getProductDetail().getProduct().);
+            subOrderResult.setProductImage(detailBill.getProductDetail().getImageList().get(0).getUrl());
 //            subOrderResult.setProductCode(detailBill.getProductDetail().getProduct().getCode());
             subOrderResult.setSize(detailBill.getProductDetail().getSize().getName());
             subOrderResults.add(subOrderResult);
@@ -155,6 +149,12 @@ public class BillServiceImplement implements BillService {
                 }
                 bill.setStatus(Constant.STATUS_PAYMENT.WAITING);
                 histories = FakeData.getChildPAYMENTTC(username, bill.getId(), history.getId());
+                List<BillDetail> detailBills = detailBillRepository.findByBillId(bill.getId());
+                for (BillDetail detailBill : detailBills) {
+                    ProductDetail productDetail = detailProductRepository.getById(detailBill.getProductDetail().getId());
+                    productDetail.setQuantity(productDetail.getQuantity() - detailBill.getQuantity());
+                    detailProductRepository.save(productDetail); // Lưu lại sau khi trừ số lượng
+                }
                 break;
             case Constant.STATUS_PAYMENT.TRANSPORTING:
                 if (!bill.getStatus().equals(Constant.STATUS_PAYMENT.WAITING)) {
@@ -169,6 +169,7 @@ public class BillServiceImplement implements BillService {
                 }
                 histories = FakeData.getChildRECEIVED(username, bill.getId(), history.getId());
                 bill.setStatus(Constant.STATUS_PAYMENT.FINISH);
+                bill.setDateOfPayment(new Date());
                 this.shippingHistoryRepository.updateStatusByBillId(bill.getId(), OrderEnum.DONE.getValue());
                 break;
             case Constant.STATUS_PAYMENT.REJECT:
@@ -232,7 +233,7 @@ public class BillServiceImplement implements BillService {
             result.setCode(bill.getCode());
             result.setCustomerName(bill.getRecipientName());
             result.setNumberPhone(bill.getRecipientPhoneNumber());
-            result.setTotal(bill.getTotalAmount());
+            result.setTotal(bill.getTotal());
             result.setStatus(CommonUtil.getStatusVn(bill.getStatus()));
             result.setCreatedBy(bill.getCreatedBy());
             result.setCreatedDate(CommonUtil.date2Str(bill.getCreatedDate()));

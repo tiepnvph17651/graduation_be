@@ -49,6 +49,5 @@ public class ProductDetail {
     private Product product;
 
     @OneToMany(mappedBy = "productDetail")
-//    @JsonManagedReference
     List<Image> imageList;
 }

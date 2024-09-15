@@ -10,7 +10,7 @@ public class BillResult {
     private String createdBy;
     private String customerName;
     private String numberPhone;
-    private BigDecimal total;
+    private Integer total;
     private String status;
     private String createdDate;
     private String note;

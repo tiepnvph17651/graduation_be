@@ -27,7 +27,6 @@ public class CartItem {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "productDetail_id", referencedColumnName = "ID")
-//    @JsonManagedReference
     private ProductDetail productDetail;
 
     @Column(name = "quantity")

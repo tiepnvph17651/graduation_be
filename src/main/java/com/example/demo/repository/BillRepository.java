@@ -83,7 +83,7 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
 
 
      //Thống kê theo ngày
-    @Query("SELECT new com.example.demo.model.result.StatisticsResult(COUNT(b), SUM(b.totalAmount), " +
+    @Query("SELECT new com.example.demo.model.result.StatisticsResult(COUNT(b), SUM(b.price), " +
             "SUM(CASE WHEN b.status = 'F' THEN 1 ELSE 0 END), " +
             "SUM(CASE WHEN b.status = 'C' THEN 1 ELSE 0 END), " +
             "SUM(CASE WHEN b.status = 'R' THEN 1 ELSE 0 END)) " +
@@ -92,7 +92,7 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
 
 
     // Thống kê theo tuần (native query)
-    @Query(value = "SELECT COUNT(*), SUM(TOTAL_AMOUNT), \n" +
+    @Query(value = "SELECT COUNT(*), SUM(PRICE), \n" +
             "       SUM(CASE WHEN STATUS = 'F' THEN 1 ELSE 0 END),\n" +
             "       SUM(CASE WHEN STATUS = 'C' THEN 1 ELSE 0 END),\n" +
             "       SUM(CASE WHEN STATUS = 'R' THEN 1 ELSE 0 END)\n" +
@@ -102,7 +102,7 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
             nativeQuery = true)
     List<Object[]> getStatisticsByWeek();
 
-    @Query(value = "SELECT COUNT(*) AS totalCount, SUM(TOTAL_AMOUNT) AS totalAmount, " +
+    @Query(value = "SELECT COUNT(*) AS totalCount, SUM(PRICE) AS totalAmount, " +
             "SUM(CASE WHEN status = 'F' THEN 1 ELSE 0 END) AS completedCount, " +
             "SUM(CASE WHEN status = 'C' THEN 1 ELSE 0 END) AS cancelledCount, " +
             "SUM(CASE WHEN status = 'R' THEN 1 ELSE 0 END) AS returnedCount " +
@@ -113,7 +113,7 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
 
 
     // Thống kê theo năm
-    @Query(value = "SELECT COUNT(*) AS totalCount, SUM(TOTAL_AMOUNT) AS totalAmount, " +
+    @Query(value = "SELECT COUNT(*) AS totalCount, SUM(PRICE) AS totalAmount, " +
             "SUM(CASE WHEN status = 'F' THEN 1 ELSE 0 END) AS completedCount, " +
             "SUM(CASE WHEN status = 'C' THEN 1 ELSE 0 END) AS cancelledCount, " +
             "SUM(CASE WHEN status = 'R' THEN 1 ELSE 0 END) AS returnedCount " +

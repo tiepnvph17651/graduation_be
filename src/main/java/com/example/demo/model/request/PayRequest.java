@@ -17,5 +17,6 @@ public class PayRequest {
     BigDecimal fee;
     BigDecimal  totalPricePro;
     String username;
+    Integer  quantity;
     List<CartItem> cartItems;
 }

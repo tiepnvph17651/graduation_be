@@ -60,8 +60,8 @@ public class Bill {
     @Column(name = "RECIPIENT_PHONE_NUMBER")
     private String recipientPhoneNumber;
 
-    @Column(name = "TOTAL_AMOUNT")
-    private BigDecimal totalAmount;
+    @Column(name = "QUANTITY")
+    private Integer  total;
 
     @Column(name = "RECEIVER_ADDRESS")
     private String receiverAddress;
@@ -85,7 +85,7 @@ public class Bill {
 
     private String note;
 
-    @Column(name="totalPricePro")
+    @Column(name="Price")
     private BigDecimal price;
 
     @PrePersist

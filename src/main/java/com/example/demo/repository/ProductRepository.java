@@ -55,7 +55,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> , Jpa
             "ORDER BY YEAR(b.dateOfPayment), MONTH(b.dateOfPayment)")
     List<Object[]> findRevenueByMonthYear();
 
-    @Query(value = "SELECT DATEPART(MONTH, b.DATE_OF_PAYMENT) as month, SUM(b.TOTAL_AMOUNT) as totalAmount " +
+    @Query(value = "SELECT DATEPART(MONTH, b.DATE_OF_PAYMENT) as month, SUM(b.PRICE) as totalAmount " +
             "FROM BILL b GROUP BY DATEPART(MONTH, b.DATE_OF_PAYMENT)", nativeQuery = true)
     List<Object[]> findMonthlyRevenue();
 
@@ -83,4 +83,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> , Jpa
 
     @Query("SELECT p FROM Product p WHERE p.id IN (SELECT dp.product.id FROM ProductDetail dp WHERE dp.id IN :detailProductIds)")
     List<Product> findByDetailProductIds(List<Integer> detailProductIds);
+
+    boolean existsByProductNameIgnoreCase(String productName);
 }

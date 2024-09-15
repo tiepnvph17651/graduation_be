@@ -11,11 +11,11 @@ public class FakeData {
     public static List<ShippingHistory> getParentShippingHistoryTC(String username, Integer billId) {
         LocalDateTime dateTime = LocalDateTime.now();
         return List.of(
-                new ShippingHistory(1, billId,1, OrderEnum.DONE.getValue(), username, username, "Đặt hàng", "Đơn hàng đã được đặt và xác nhận", null, dateTime, dateTime),
-                new ShippingHistory(2, billId,2, OrderEnum.PENDING.getValue(), username, username, "Thanh toán", "Khách hàng đã hoàn tất việc thanh toán cho đơn hàng", null, dateTime.plusDays(1).plusHours(5), dateTime.plusDays(1).plusHours(5)),
+                new ShippingHistory(1, billId,1, OrderEnum.DONE.getValue(), username, username, "Đặt hàng", "Đơn hàng đã được đặt thành công", null, dateTime, dateTime),
+                new ShippingHistory(2, billId,2, OrderEnum.PENDING.getValue(), username, username, "Đang xử lý", "Đơn hàng đang chờ xác nhận", null, dateTime.plusDays(1).plusHours(5), dateTime.plusDays(1).plusHours(5)),
                 new ShippingHistory(3, billId,3, OrderEnum.PENDING.getValue(), username, username, "Đang giao hàng", "Đơn hàng đã được chuyển đến đơn vị vận chuyển và đang trên đường tới khách hàng", null, dateTime.plusDays(2).plusHours(5), dateTime.plusDays(2).plusHours(5)),
                 new ShippingHistory(4, billId,4, OrderEnum.PENDING.getValue(), username, username, "Đã nhận hàng", "Khách hàng đã nhận được hàng", null, dateTime.plusDays(3).plusHours(5), dateTime.plusDays(3).plusHours(5)),
-                new ShippingHistory(5, billId,5, OrderEnum.PENDING.getValue(), username, username, "Hoàn thành", "Đơn hàng đã được thanh toán, giao hàng thành công và không có yêu cầu trả hàng hoặc hoàn tiền", null, dateTime.plusDays(4).plusHours(5), dateTime.plusDays(4).plusHours(5))
+                new ShippingHistory(5, billId,5, OrderEnum.PENDING.getValue(), username, username, "Hoàn thành", "Đơn hàng đã được thanh toán, giao hàng thành công và hoàn tất", null, dateTime.plusDays(4).plusHours(5), dateTime.plusDays(4).plusHours(5))
         );
     }
 
@@ -26,7 +26,7 @@ public class FakeData {
                 new ShippingHistory(null, billId,null, OrderEnum.PENDING.getValue(), username, username, "Đang xử lý", "Đơn hàng đang chờ xác nhận", null, dateTime.plusHours(2), dateTime.plusHours(2)),
                 new ShippingHistory(null, billId,null, OrderEnum.PENDING.getValue(), username, username, "Đang giao hàng", "Đơn hàng đã được chuyển đến đơn vị vận chuyển và đang trên đường tới khách hàng", null, dateTime.plusHours(3), dateTime.plusHours(4)),
                 new ShippingHistory(null, billId,null, OrderEnum.PENDING.getValue(), username, username, "Đã nhận hàng", "Khách hàng đã nhận được hàng", null, dateTime.plusHours(5), dateTime.plusHours(5)),
-                new ShippingHistory(null, billId,null, OrderEnum.PENDING.getValue(), username, username, "Hoàn thành", "Đơn hàng đã được thanh toán, giao hàng thành công và không có yêu cầu trả hàng hoặc hoàn tiền", null, dateTime.plusHours(6), dateTime.plusHours(6))
+                new ShippingHistory(null, billId,null, OrderEnum.PENDING.getValue(), username, username, "Hoàn thành", "Đơn hàng đã được thanh toán, giao hàng thành công và hoàn tất", null, dateTime.plusHours(6), dateTime.plusHours(6))
         );
     }
 
@@ -35,7 +35,7 @@ public class FakeData {
         return List.of(
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "kiểm tra tồn kho", "Sản phẩm còn hàng trong kho", parentId, dateTime, dateTime),
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đang đóng gói", "Sản phẩm đang được đóng gói để chuẩn bị cho vận chuyển", parentId, dateTime.plusHours(1), dateTime.plusHours(1)),
-                new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Chờ xác nhận thanh toán", "Đơn hàng đang chờ xác nhận thanh toán từ cổng thanh toán hoặc ngân hàng", parentId, dateTime.plusHours(2), dateTime.plusHours(2)),
+                //new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Chờ xác nhận thanh toán", "Đơn hàng đang chờ xác nhận thanh toán từ cổng thanh toán hoặc ngân hàng", parentId, dateTime.plusHours(2), dateTime.plusHours(2)),
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đang xác nhận đơn hàng", "Đơn hàng đang được xác nhận bởi nhân viên", parentId, dateTime.plusHours(3), dateTime.plusHours(3))
         );
     }
@@ -43,8 +43,8 @@ public class FakeData {
     public static List<ShippingHistory> getChildPAYMENTTC(String username, Integer billId, int parentId) {
         LocalDateTime dateTime = LocalDateTime.now();
         return List.of(
-                new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Thanh toán thành công, chờ xác nhận", "Thanh toán đã thành công nhưng vẫn đang chờ xác nhận từ hệ thống", parentId, dateTime.plusDays(1).plusHours(1), dateTime.plusDays(1).plusHours(1)),
-                new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đã nhận thanh toán qua chuyển khoản ngân hàng", " Thanh toán đã được thực hiện thành công qua chuyển khoản ngân hàng", parentId, dateTime.plusDays(1).plusHours(1), dateTime.plusDays(1).plusHours(1))
+                new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đang xử lý", "Đơn hàng đang được xử lý và chuẩn bị để đóng gói", parentId, dateTime.plusDays(1).plusHours(1), dateTime.plusDays(1).plusHours(1)),
+                new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đang đóng gói", " Sản phẩm đang được đóng gói để chuẩn bị cho quá trình vận chuyển", parentId, dateTime.plusDays(1).plusHours(1), dateTime.plusDays(1).plusHours(1))
         );
     }
 
@@ -53,7 +53,7 @@ public class FakeData {
         return List.of(
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "kiểm tra tồn kho", "Sản phẩm còn hàng trong kho", parentId, dateTime.plusDays(2), dateTime.plusDays(2)),
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đang đóng gói", "Sản phẩm đang được đóng gói để chuẩn bị cho vận chuyển", parentId, dateTime.plusDays(2).plusHours(1), dateTime.plusDays(2).plusHours(1)),
-                new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Chờ xác nhận thanh toán", "Đơn hàng đang chờ xác nhận thanh toán từ cổng thanh toán hoặc ngân hàng", parentId, dateTime.plusDays(2).plusHours(2), dateTime.plusDays(2).plusHours(2)),
+                //new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Chờ xác nhận thanh toán", "Đơn hàng đang chờ xác nhận thanh toán từ cổng thanh toán hoặc ngân hàng", parentId, dateTime.plusDays(2).plusHours(2), dateTime.plusDays(2).plusHours(2)),
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đang xác nhận đơn hàng", "Đơn hàng đang được xác nhận bởi nhân viên", parentId, dateTime.plusDays(2).plusHours(3), dateTime.plusDays(2).plusHours(3))
         );
     }

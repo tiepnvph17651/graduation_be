@@ -4,6 +4,7 @@ import com.example.demo.config.exception.BusinessException;
 import com.example.demo.entity.Image;
 import com.example.demo.entity.Product;
 import com.example.demo.entity.ProductDetail;
+import com.example.demo.enums.ErrorCode;
 import com.example.demo.model.DTO.ProductSalesDTO;
 import com.example.demo.model.DTO.RevenueDTO;
 import com.example.demo.model.info.PaginationInfo;
@@ -134,6 +135,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public AddProductRequest saveProduct(AddProductRequest productRequest) throws BusinessException {
+        String productName = productRequest.getProductName().toLowerCase();
+        if(productRepository.existsByProductNameIgnoreCase(productName)){
+            throw new BusinessException(ErrorCode.PRODUCTNAME_ALREADY_EXISTS);
+        }
         Product product = new Product();
         product.setProductName(productRequest.getProductName());
         product.setBrand(productRequest.getBrand());

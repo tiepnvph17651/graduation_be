@@ -9,6 +9,7 @@ public enum ErrorCode implements BaseErrorCode {
     USER_NOT_FOUND(400, "user.not.found", HttpStatus.NOT_FOUND),
     ADDRESS_NOT_FOUND(404, "address.not.found", HttpStatus.NOT_FOUND),
     USERNAME_ALREADY_EXISTS(400, "username.already.exists", HttpStatus.BAD_REQUEST),
+    PRODUCTNAME_ALREADY_EXISTS(400, "productname.already.exists", HttpStatus.BAD_REQUEST),
     PASSWORD_IS_NOT_MATCH(400, "password.is.not.match", HttpStatus.BAD_REQUEST),
     THE_NEWPASSWORD_MUST_BE_DIFFERENT_FROM_THE_OLDPASSWORD(400,"newpassword.must.be.different.from.oldpassword",HttpStatus.BAD_REQUEST),
     DATE_OF_BIRTH_IS_IN_WRONG_FORMAT(400, "date.of.birth.is.in.wrong.format", HttpStatus.BAD_REQUEST),

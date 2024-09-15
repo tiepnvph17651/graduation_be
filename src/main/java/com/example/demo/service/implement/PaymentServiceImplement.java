@@ -4,7 +4,6 @@ import com.example.demo.config.exception.BusinessException;
 import com.example.demo.entity.*;
 import com.example.demo.enums.ErrorCode;
 import com.example.demo.enums.OrderEnum;
-import com.example.demo.model.request.CreatePaymentRequest;
 import com.example.demo.model.request.PayRequest;
 import com.example.demo.model.request.PaymentRequest;
 import com.example.demo.model.response.PaymentResponse;
@@ -19,7 +18,6 @@ import com.example.demo.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -197,7 +195,9 @@ public class PaymentServiceImplement implements PaymentService {
         if (address == null) {
             throw new BusinessException(ErrorCode.ADDRESS_NOT_FOUND);
         }
+//        CartItem cartItems = new CartItem();
         Bill bill2 = new Bill();
+        bill2.setCode(request.getCode());
         bill2.setUser(user);
         bill2.setStatus(Constant.STATUS_PAYMENT.PENDING);
         bill2.setPaymentStatus(Constant.PAYMENT_STATUS.NOT_PAID);
@@ -208,20 +208,27 @@ public class PaymentServiceImplement implements PaymentService {
         bill2.setRecipientName(user.getFullName());
         bill2.setRecipientPhoneNumber(user.getNumberPhone());
         bill2.setReceiverAddress(address.getFulladdress());
-        bill2.setTotalAmount(request.getFee().add(request.getTotalPricePro()));
+        List<CartItem> list = request.getCartItems();
+        int totalQuantity = list.stream().mapToInt(CartItem::getQuantity).sum();
+        bill2.setTotal(totalQuantity);
+//        bill2.setTotalAmount(request.getFee().add(request.getTotalPricePro()));
         bill2.setPrice(request.getTotalPricePro());
         bill2.setShippingMoney(request.getFee());
         bill = billRepository.save(bill2);
-        List<CartItem> list = request.getCartItems();
-//        List<BillDetail> detailList = new ArrayList<>();
+        int billId = bill2.getId();
+        List<BillDetail> detailBills = new ArrayList<>();
         for(CartItem cartItem:list){
             BillDetail billDetail = new BillDetail();
             billDetail.setBill(bill);
             billDetail.setProductDetail(cartItem.getProductDetail());
             billDetail.setQuantity(Long.valueOf(cartItem.getQuantity()));
+            billDetail.setPrice(cartItem.getProductDetail().getPrice());
+            detailBills.add(billDetail);
             detailBillRepository.save(billDetail);
+            detailBillRepository.saveAll(detailBills);
             detailCartRepository.delete(cartItem);
         }
+        saveHistory(billId, username);
     }
 
 //    @Transactional
