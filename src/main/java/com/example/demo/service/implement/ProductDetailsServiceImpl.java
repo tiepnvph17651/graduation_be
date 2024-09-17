@@ -88,8 +88,15 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
     }
 
     @Override
-    public ProductDetail deleteProductDetails(Integer id) throws BusinessException {
-        return null;
+    public ProductDetail changStatus(Integer id) throws BusinessException {
+//        return productDetailsRepository.save(pd);
+        ProductDetail productDetail = productDetailsRepository.findById(id).get();
+        if(productDetail.getStatus()==1){
+            productDetail.setStatus(0);
+        }else {
+            productDetail.setStatus(1);
+        }
+        return productDetailsRepository.save(productDetail);
     }
 
 

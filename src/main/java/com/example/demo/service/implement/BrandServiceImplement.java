@@ -2,15 +2,20 @@ package com.example.demo.service.implement;
 
 import com.example.demo.config.exception.BusinessException;
 import com.example.demo.entity.Brand;
+import com.example.demo.enums.ErrorCode;
+import com.example.demo.model.info.PaginationInfo;
 import com.example.demo.model.request.BrandsRequest;
 import com.example.demo.model.response.BrandsResponse;
+import com.example.demo.model.utilities.CommonUtil;
 import com.example.demo.repository.BrandRepository;
 import com.example.demo.service.BrandService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -18,28 +23,54 @@ import java.util.List;
 public class BrandServiceImplement implements BrandService {
     private final BrandRepository brandRepository;
 
-    @Override
-    public Brand saveBrand(Brand brand) throws BusinessException {
-        return null;
-    }
-
-    @Override
-    public Brand deleteBrand(Integer id) throws BusinessException {
-        return null;
-    }
-
-    @Override
-    public Brand getBrand(Integer id) throws BusinessException {
-        return null;
-    }
 
     @Override
     public BrandsResponse getBrands(BrandsRequest request, int page, int size) throws BusinessException {
-        return null;
+        List<Brand> allBrand = brandRepository.findAll(Sort.by(Sort.Direction.fromString("desc"), "id"));
+        if (CommonUtil.isNullOrEmpty(request.getName())) {
+            request.setName(""); // nếu request.getName() không có giá trị thì gán bằng giá trị rỗng
+        }
+        List<Brand> filteredBrand = allBrand.stream()
+                .filter(brand -> brand.getName().contains(request.getName())).collect(Collectors.toList());
+//        List<Brand> filteredBrand = allBrand.stream().collect(Collectors.toList());
+        int start = Math.min(page * size, filteredBrand.size());
+        int end = Math.min((page + 1) * size, filteredBrand.size());
+        List<Brand> pagedBrand = filteredBrand.subList(start,end);
+        BrandsResponse brandsResponse = new BrandsResponse();
+        brandsResponse.setBrands(pagedBrand);
+        PaginationInfo paginationInfo = CommonUtil.getPaginationInfo(page, size, filteredBrand.size());
+        brandsResponse.setPagination(paginationInfo);
+        return brandsResponse;
     }
 
     @Override
+    public Brand saveBrand(Brand brand) throws BusinessException {
+        if(brandRepository.existsByNameIgnoreCase(brand.getName())){
+            throw new BusinessException(ErrorCode.BRAND_NAME_IS_EXIST);
+        }
+        return brandRepository.save(brand);
+    }
+
+    @Override
+    public Brand changeStatus(Brand brand) throws BusinessException {
+        return brandRepository.save(brand);
+    }
+
+    @Override
+    public Brand update(Brand brand) throws BusinessException {
+        return brandRepository.save(brand);
+    }
+
+
+    //admin lấy ra list đang hoạt động
+    @Override
     public List<Brand> getAllBrands() {
+        return brandRepository.findByStatus(1);
+    }
+
+    //custom lấy ra tất cả
+    @Override
+    public List<Brand> getAllBrandsForC() {
         return brandRepository.findAll();
     }
 

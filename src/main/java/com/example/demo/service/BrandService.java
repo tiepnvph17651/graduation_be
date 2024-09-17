@@ -13,10 +13,12 @@ public interface BrandService {
 
     Brand saveBrand(Brand brand) throws BusinessException;
 
-    Brand deleteBrand(Integer id) throws BusinessException;
+    Brand changeStatus(Brand brand) throws BusinessException;
 
-    Brand getBrand(Integer id) throws BusinessException;
+    Brand update(Brand brand) throws BusinessException;
 
     List<Brand> getAllBrands();
+
+    List<Brand> getAllBrandsForC();
 
 }

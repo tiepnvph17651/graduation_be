@@ -13,7 +13,7 @@ public interface ProductDetailsService {
     List<ProductDetail> getAllProductDetails();
     ProductDetail saveProductDetails(ProductDetail ProductDetail) throws BusinessException;
 
-    ProductDetail deleteProductDetails(Integer id) throws BusinessException;
+    ProductDetail changStatus(Integer pd) throws BusinessException;
 
     ProductDetailResponse getProductDetail(Integer id) throws BusinessException;
 

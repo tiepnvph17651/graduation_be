@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SizeRequest {
-    private int id;
+public class    SizeRequest {
     private String name;
-    private String description;
+
 }
