@@ -15,6 +15,7 @@ import com.example.demo.model.result.*;
 import com.example.demo.model.utilities.CommonUtil;
 import com.example.demo.model.utilities.Constant;
 import com.example.demo.model.utilities.FakeData;
+import com.example.demo.model.utilities.SercurityUtils;
 import com.example.demo.repository.*;
 import com.example.demo.service.BillService;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,53 @@ public class BillServiceImplement implements BillService {
     private final ProductRepository productRepository;
     private final DetailProductRepository detailProductRepository;
     private final ShippingHistoryRepository shippingHistoryRepository;
+
+    @Override
+    public BillsResponse getCustomerBills(GetBillRequest request, int page, int size, String sortField, String sortType) {
+        log.info("getCustomerBills: {}", CommonUtil.beanToString(request));
+        BillsResponse response = new BillsResponse();
+        List<BillResult> results = new ArrayList<>();
+        String status = request.getStatus();
+        String keyword = request.getKeyword();
+        String username = SercurityUtils.getCurrentUser();
+        if (CommonUtil.isNullOrEmpty(keyword)) {
+            keyword = "";
+        }
+        Pageable pageable = null;
+        if (CommonUtil.isNullOrEmpty(sortField)) {
+            pageable = PageRequest.of(page, size);
+        } else {
+            Sort sort = Sort.by(Sort.Direction.fromString(sortType), sortField);
+            pageable = PageRequest.of(page, size, sort);
+        }
+
+        // Lọc hóa đơn theo `username` của khách hàng và trạng thái
+        Page<Bill> bills = billRepository.findByCreatedByAndStatus(username, status, pageable);
+
+        for (Bill bill : bills) {
+            BillResult result = new BillResult();
+            result.setId(bill.getId());
+            result.setCode(bill.getCode());
+            result.setCustomerName(bill.getRecipientName());
+            result.setNumberPhone(bill.getRecipientPhoneNumber());
+            result.setTotal(bill.getTotal());
+            result.setStatus(CommonUtil.getStatusVn(bill.getStatus()));
+            result.setCreatedBy(bill.getCreatedBy());
+            result.setCreatedDate(CommonUtil.date2Str(bill.getCreatedDate()));
+            result.setPrice(bill.getPrice());
+            result.setNote(bill.getNote());
+            result.setModifiedBy(bill.getModifiedBy());
+            result.setModifiedDate(CommonUtil.date2Str(bill.getModifiedDate()));
+            result.setReceiveDate(CommonUtil.date2Str(bill.getEstimatedDeliveryDate()));
+            results.add(result);
+        }
+        PaginationInfo paginationInfo = CommonUtil.getPaginationInfo(bills.getNumber(), bills.getSize(), Math.toIntExact(bills.getTotalElements()));
+        response.setPagination(paginationInfo);
+        response.setBills(results);
+        return response;
+    }
+
+
 
     @Override
     public BillsResponse getBills(GetBillRequest request, int page, int size, String sortField, String sortType) {
@@ -85,6 +133,43 @@ public class BillServiceImplement implements BillService {
         response.setBills(results);
         return response;
     }
+    @Override
+    public DetailOrderResponse getCustomerOrderDetail(String code) throws BusinessException {
+        log.info("getCustomerOrderDetail: {}", code);
+        DetailOrderResponse response = new DetailOrderResponse();
+        Optional<Bill> optional = billRepository.findByCode(code);
+        if (optional.isEmpty()) {
+            throw new BusinessException(ErrorCode.BILL_NOT_FOUND);
+        }
+        Bill bill = optional.get();
+        response.setId(bill.getId());
+        response.setOrderCode(bill.getCode());
+        response.setNumberPhone(bill.getRecipientPhoneNumber());
+        response.setFullName(bill.getRecipientName());
+        response.setFullAddress(bill.getReceiverAddress());
+        response.setStatus(CommonUtil.getStatusVn(bill.getStatus()));
+        response.setStatusCode(bill.getStatus());
+        response.setPrice(bill.getPrice());
+        response.setFee(bill.getShippingMoney());
+        response.setSumPrice(bill.getPrice().add(bill.getShippingMoney()));
+        response.setReceiveDate(CommonUtil.date2Str(bill.getEstimatedDeliveryDate()));
+
+        // Lấy chi tiết sản phẩm
+        List<SubOrderResult> subOrderResults = new ArrayList<>();
+        List<BillDetail> detailBills = detailBillRepository.findByBillId(bill.getId());
+        for (BillDetail detailBill : detailBills) {
+            SubOrderResult subOrderResult = new SubOrderResult();
+            subOrderResult.setProductName(detailBill.getProductDetail().getProduct().getProductName());
+            subOrderResult.setQuantity(detailBill.getQuantity());
+            subOrderResult.setPrice(detailBill.getPrice());
+            subOrderResult.setSize(detailBill.getProductDetail().getSize().getName());
+            subOrderResult.setProductImage(detailBill.getProductDetail().getImageList().get(0).getUrl());
+            subOrderResults.add(subOrderResult);
+        }
+        response.setProducts(subOrderResults);
+
+        return response;
+    }
 
     @Override
     public DetailOrderResponse detail(String code) throws BusinessException {
@@ -106,7 +191,6 @@ public class BillServiceImplement implements BillService {
         response.setPrice(bill.getPrice());
         response.setFee(bill.getShippingMoney());
         response.setSumPrice(bill.getPrice().add(bill.getShippingMoney()));
-        //response.setPaymentMethod(CommonUtil.getPaymentMethod(bill.getPaymentMethod().getNameMethod()));
         response.setReceiveDate(CommonUtil.date2Str(bill.getEstimatedDeliveryDate()));
         List<SubOrderResult> subOrderResults = new ArrayList<>();
         List<BillDetail> detailBills = detailBillRepository.findByBillId(bill.getId());
@@ -118,7 +202,6 @@ public class BillServiceImplement implements BillService {
             subOrderResult.setQuantity(detailBill.getQuantity());
             subOrderResult.setPrice(detailBill.getPrice());
             subOrderResult.setProductImage(detailBill.getProductDetail().getImageList().get(0).getUrl());
-//            subOrderResult.setProductCode(detailBill.getProductDetail().getProduct().getCode());
             subOrderResult.setSize(detailBill.getProductDetail().getSize().getName());
             subOrderResults.add(subOrderResult);
         }
@@ -169,6 +252,7 @@ public class BillServiceImplement implements BillService {
                 }
                 histories = FakeData.getChildRECEIVED(username, bill.getId(), history.getId());
                 bill.setStatus(Constant.STATUS_PAYMENT.FINISH);
+                bill.setPaymentStatus(Constant.PAYMENT_STATUS.PAID);
                 bill.setDateOfPayment(new Date());
                 this.shippingHistoryRepository.updateStatusByBillId(bill.getId(), OrderEnum.DONE.getValue());
                 break;
@@ -178,9 +262,7 @@ public class BillServiceImplement implements BillService {
                 }
             case Constant.STATUS_PAYMENT.ROLLBACK:
                 if (bill.getStatus().equals(Constant.STATUS_PAYMENT.WAITING)) {
-                    // Delete all shipping history records with LEVEL >= 2 (for example)
                     this.rollbackShippingHistory(bill.getId(), 2);
-                    // this.shippingHistoryRepository.deleteByBillIdAndLevelGreaterThanEqual(bill.getId(), 2);
                     bill.setStatus(Constant.STATUS_PAYMENT.PENDING);
                 }
                 break;
@@ -188,8 +270,8 @@ public class BillServiceImplement implements BillService {
                 bill.setStatus(Constant.STATUS_PAYMENT.CANCEL);
         }
         bill.setModifiedBy(username);
-        if (bill.equals(Constant.STATUS_PAYMENT.FINISH)) {
-            bill.setPaymentStatus(Constant.PAYMENT_STATUS.PAID);
+        if (bill.getPaymentStatus().equals(Constant.PAYMENT_STATUS.PAID)) {
+            bill.setPaymentStatus(Constant.PAYMENT_STATUS.SUCCESS);
         }
         if (bill.equals(Constant.STATUS_PAYMENT.REJECT) || bill.equals(Constant.STATUS_PAYMENT.CANCEL)) {
             rollbackProduct(bill.getId());
@@ -328,13 +410,6 @@ public class BillServiceImplement implements BillService {
         List<Product> products = new ArrayList<>();
         List<ProductDetail> detailProducts = new ArrayList<>();
         for (BillDetail detailBill : detailBills) {
-//            Product product = productRepository.getById(detailBill.getProductDetail().getProduct().getId());
-//            product.setTotal(product.getTotal() - detailBill.getQuantity());
-//            products.add(product);
-//            ProductDetail detailProduct = detailProductRepository.getById(detailBill.getDetailProductId());
-//            detailProduct.setTotal(detailProduct.getTotal() - detailBill.getQuantity());
-//            detailProducts.add(detailProduct);
-
             ProductDetail detailProduct = detailProductRepository.getById(detailBill.getProductDetail().getId());
             detailProduct.setQuantity(detailProduct.getQuantity() - detailBill.getQuantity());
             detailProducts.add(detailProduct);

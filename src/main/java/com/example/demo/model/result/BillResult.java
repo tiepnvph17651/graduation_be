@@ -3,6 +3,7 @@ package com.example.demo.model.result;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class BillResult {
@@ -19,4 +20,5 @@ public class BillResult {
     private String modifiedBy;
     private String modifiedDate;
     private String receiveDate;
+    private List<SubOrderResult> products; // Thêm products
 }

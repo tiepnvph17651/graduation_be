@@ -89,4 +89,10 @@ public interface ProductRepository extends JpaRepository<Product, Integer> , Jpa
     boolean existsByProductNameIgnoreCase(String productName);
 
     List<Product> findByStatus(Integer status);
+
+    @Query("SELECT new com.example.demo.model.DTO.BestSellingProductDto(bd.productDetail.product.productName, SUM(bd.quantity)) " +
+            "FROM BillDetail bd " +
+            "GROUP BY bd.productDetail.product.productName " +
+            "ORDER BY SUM(bd.quantity) DESC")
+    List<BestSellingProductDto> findTop4BestSellingProducts();
 }

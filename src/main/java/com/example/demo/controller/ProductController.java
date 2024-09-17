@@ -263,4 +263,9 @@ public class ProductController {
         return ResponseEntity.ok()
                 .body(new ResponseData<>().success(productService.getProduct(id)));
     }
+
+    @GetMapping("/top4-selling-products")
+    public List<BestSellingProductDto> getTo4p4SellingProducts() {
+        return productService.getTop4BestSellingProducts();
+    }
 }

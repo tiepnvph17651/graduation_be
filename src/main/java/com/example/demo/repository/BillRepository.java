@@ -176,6 +176,7 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
             "ORDER BY SUM(bd.quantity) DESC")
     List<ProductDTO> findTopSellingProductsByCustomRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
+    Page<Bill> findByCreatedByAndStatus(String createdBy, String status, Pageable pageable);
 
 
 

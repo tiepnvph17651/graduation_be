@@ -5,6 +5,7 @@ import com.example.demo.entity.Image;
 import com.example.demo.entity.Product;
 import com.example.demo.entity.ProductDetail;
 import com.example.demo.enums.ErrorCode;
+import com.example.demo.model.DTO.BestSellingProductDto;
 import com.example.demo.model.DTO.ProductSalesDTO;
 import com.example.demo.model.DTO.RevenueDTO;
 import com.example.demo.model.info.PaginationInfo;
@@ -238,6 +239,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> getTop4NewestProducts() throws BusinessException {
         return productRepository.findTop4ByStatusOrderByCreatedDateDesc(1);
+    }
+
+    @Override
+    public List<BestSellingProductDto> getTop4BestSellingProducts() {
+        return productRepository.findTop4BestSellingProducts().stream()
+                .limit(4)  // Giới hạn số lượng sản phẩm trả về là 4
+                .toList();
     }
 
 }

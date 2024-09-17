@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.config.exception.BusinessException;
 import com.example.demo.entity.Product;
+import com.example.demo.model.DTO.BestSellingProductDto;
 import com.example.demo.model.DTO.ProductSalesDTO;
 import com.example.demo.model.DTO.RevenueDTO;
 import com.example.demo.model.request.AddProductRequest;
@@ -31,4 +32,6 @@ public interface ProductService {
     Product changeStatus (Product product)throws BusinessException;
 
     List<Product> getTop4NewestProducts () throws BusinessException;
+
+    List<BestSellingProductDto> getTop4BestSellingProducts();
 }
