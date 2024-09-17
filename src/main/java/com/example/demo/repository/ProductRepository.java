@@ -1,10 +1,12 @@
 package com.example.demo.repository;
 
+import com.example.demo.entity.Brand;
 import com.example.demo.entity.Product;
 import com.example.demo.model.DTO.BestSellingProductDto;
 import com.example.demo.model.DTO.MonthlyRevenueDto;
 import com.example.demo.model.DTO.RevenueData;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -79,10 +81,12 @@ public interface ProductRepository extends JpaRepository<Product, Integer> , Jpa
     @Query("SELECT p FROM Product p WHERE p.id = (SELECT MAX(p2.id) FROM Product p2)")
     Product getLastProductId();
 
-    List<Product> findTop4ByOrderByCreatedDateDesc();
+    List<Product> findTop4ByStatusOrderByCreatedDateDesc(Integer status);
 
     @Query("SELECT p FROM Product p WHERE p.id IN (SELECT dp.product.id FROM ProductDetail dp WHERE dp.id IN :detailProductIds)")
     List<Product> findByDetailProductIds(List<Integer> detailProductIds);
 
     boolean existsByProductNameIgnoreCase(String productName);
+
+    List<Product> findByStatus(Integer status);
 }

@@ -10,6 +10,7 @@ import com.example.demo.model.DTO.RevenueDTO;
 import com.example.demo.model.info.PaginationInfo;
 import com.example.demo.model.request.*;
 import com.example.demo.model.response.ProductResponse;
+import com.example.demo.model.response.ProductShowCustomResponse;
 import com.example.demo.model.utilities.CommonUtil;
 import com.example.demo.repository.ProductDetailsRepository;
 import com.example.demo.repository.ProductRepository;
@@ -181,7 +182,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse show(GetProductRequest request, int page, int size) throws BusinessException {
 
-        Specification<Product> spec = Specification.where(null);
+        Specification<Product> spec = Specification.where(ProductSpecifications.hasStatus(1));
 
         if (request.getBrands() != null && !request.getBrands().isEmpty()) {
             spec = spec.and(ProductSpecifications.hasBrands(request.getBrands()));
@@ -222,6 +223,7 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findById(id).get();
     }
 
+
     @Override
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -235,7 +237,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getTop4NewestProducts() throws BusinessException {
-        return productRepository.findTop4ByOrderByCreatedDateDesc();
+        return productRepository.findTop4ByStatusOrderByCreatedDateDesc(1);
     }
 
 }

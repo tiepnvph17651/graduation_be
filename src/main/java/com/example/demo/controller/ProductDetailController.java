@@ -52,4 +52,11 @@ public class ProductDetailController {
         return ResponseEntity.ok()
                 .body(new ResponseData<>().success(productDetailsService.updatePD(idPro,detail)));
     }
+
+    @PutMapping("/changStatusPD/{id}")
+    public ResponseEntity<ResponseData<Object>> changStatusPD(@PathVariable("id")Integer id) throws BusinessException {
+        System.out.println(id);
+        return ResponseEntity.ok()
+                .body(new ResponseData<>().success(productDetailsService.changStatus(id)));
+    }
 }

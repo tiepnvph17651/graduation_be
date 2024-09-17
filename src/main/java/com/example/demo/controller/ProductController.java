@@ -234,6 +234,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.saveProduct(request));
     }
 
+    //Trang sản phẩm
     @PostMapping("/show")
     public ResponseEntity<ResponseData<Object>> show(@RequestBody GetProductRequest request,
                                                      @RequestParam(defaultValue = "0") int page,
@@ -241,12 +242,16 @@ public class ProductController {
         return ResponseEntity.ok()
                 .body(new ResponseData<>().success(productService.show(request, page, size)));
     }
+
     @PutMapping("/change-status/{id}")
     public ResponseEntity<ResponseData<Object>> changeStatus(@RequestBody Product product) throws BusinessException {
         System.out.println("trạng thái gửi từ fe: "+product.getStatus() + "id: " + product.getId());
         return ResponseEntity.ok()
                 .body(new ResponseData<>().success(productService.changeStatus(product)));
     }
+
+
+    //Trang chủ
     @GetMapping("/findTop4New")
     public ResponseEntity<ResponseData<Object>> get() throws BusinessException {
         return ResponseEntity.ok()

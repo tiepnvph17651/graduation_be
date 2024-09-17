@@ -6,6 +6,13 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.List;
 
 public class ProductSpecifications {
+
+    public static Specification<Product> hasStatus(Integer status) {
+        return (root, query, cb) -> {
+            return cb.equal(root.get("status"), status);
+        };
+    }
+
     public static Specification<Product> hasStyles(List<Style> styles) {
         return (root, query, criteriaBuilder) -> {
             if (styles == null || styles.isEmpty()) {
