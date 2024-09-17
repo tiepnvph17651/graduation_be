@@ -19,37 +19,34 @@ public class CreateAddressRequest {
 
     private Long userID;
 
-    @NotBlank(message = "is.not.blank")
+    @NotBlank(message = "Họ tên không được để trống")
     private String fullName;
 
-    @NotBlank(message = "is.not.blank")
+    @NotBlank(message = "Địa chỉ không được để trống")
     private String address;
 
-    @NotBlank(message = "is.not.blank")
+    @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^(0[1-9]|84[1-9])([0-9]{8,9})$", message = "is.not.valid.")
     private String numberPhone;
 
-    @NotNull(message = "is.not.null")
     @JsonProperty("DistrictID")
     private Integer districtID;
 
-    @NotBlank(message = "is.not.blank")
+    @NotBlank(message = "Huyện không được để trống")
     @JsonProperty("DistrictName")
     private String districtName;
 
-    @NotNull(message = "is.not.null")
     @JsonProperty("WardCode")
     private String wardCode;
 
-    @NotBlank(message = "is.not.blank")
+    @NotBlank(message = "Xã không được để trống")
     @JsonProperty("WardName")
     private String wardName;
 
-    @NotNull(message = "is.not.null")
     @JsonProperty("ProvinceID")
     private Integer provinceID;
 
-    @NotBlank(message = "is.not.blank")
+    @NotBlank(message = "Tỉnh/Thành không được để trống")
     @JsonProperty("ProvinceName")
     private String provinceName;
 

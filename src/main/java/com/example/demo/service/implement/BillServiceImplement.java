@@ -106,7 +106,7 @@ public class BillServiceImplement implements BillService {
         response.setPrice(bill.getPrice());
         response.setFee(bill.getShippingMoney());
         response.setSumPrice(bill.getPrice().add(bill.getShippingMoney()));
-        response.setPaymentMethod(CommonUtil.getPaymentMethod(bill.getPaymentMethod().getNameMethod()));
+        //response.setPaymentMethod(CommonUtil.getPaymentMethod(bill.getPaymentMethod().getNameMethod()));
         response.setReceiveDate(CommonUtil.date2Str(bill.getEstimatedDeliveryDate()));
         List<SubOrderResult> subOrderResults = new ArrayList<>();
         List<BillDetail> detailBills = detailBillRepository.findByBillId(bill.getId());
@@ -207,7 +207,6 @@ public class BillServiceImplement implements BillService {
     public void rollbackShippingHistory(Integer billId, int level) {
         int deletedRows = shippingHistoryRepository.deleteByBillIdAndLevelGreaterThanEqual(billId, level);
         System.out.println("Number of deleted rows: " + deletedRows);
-        //shippingHistoryRepository.deleteByBillIdAndLevelGreaterThanEqual(billId, level);
     }
 
 

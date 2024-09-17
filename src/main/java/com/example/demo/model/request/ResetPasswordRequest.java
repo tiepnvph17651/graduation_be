@@ -12,13 +12,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResetPasswordRequest {
-    @NotBlank(message = "old-password.is.not.blank")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$",message = "password.is.not.valid")
+    @NotBlank(message = "Mật khẩu cũ không được để trống")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$",message = "Mật khẩu không hợp lệ")
     private String oldPassword;
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$",message = "password.is.not.valid")
-    @NotBlank(message = "new-password.is.not.blank")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$",message = "Mật khẩu không hợp lệ")
+    @NotBlank(message = "Mật khẩu mới không được để trống")
     private String newPassword;
-    @NotBlank(message = "confirm-password.is.not.blank")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$",message = "password.is.not.valid")
+    @NotBlank(message = "Mật khẩu xác nhận không được để trống")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$",message = "Mật khẩu không hợp lệ")
     private String confirmPassword;
 }
