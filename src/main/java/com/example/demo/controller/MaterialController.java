@@ -19,7 +19,7 @@ public class MaterialController {
     @Autowired
     private MaterialService materialService;
 
-    @GetMapping("/getAllMaterial")
+    @GetMapping("/getAllMaterials")
     public ResponseEntity<ResponseData<Object>> getAllBrand() throws BusinessException {
         return ResponseEntity.ok()
                 .body(new ResponseData<>().success(materialService.getAllMaterials()));

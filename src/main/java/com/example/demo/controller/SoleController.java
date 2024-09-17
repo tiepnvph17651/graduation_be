@@ -19,7 +19,7 @@ public class SoleController {
     @Autowired
     private SoleService soleService;
 
-    @GetMapping("/getAllSole")
+    @GetMapping("/getAllSoles")
     public ResponseEntity<ResponseData<Object>> getAllBrand() throws BusinessException {
         return ResponseEntity.ok()
                 .body(new ResponseData<>().success(soleService.getAllSoles()));

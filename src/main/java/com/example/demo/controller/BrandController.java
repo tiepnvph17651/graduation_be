@@ -18,7 +18,7 @@ public class BrandController extends BaseController {
     @Autowired
     private BrandService brandService;
 
-    @GetMapping("/getAllBrand")
+    @GetMapping("/getAllBrands")
     public ResponseEntity<ResponseData<Object>> getAllBrand() throws BusinessException {
         return ResponseEntity.ok()
                 .body(new ResponseData<>().success(brandService.getAllBrands()));

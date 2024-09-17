@@ -19,7 +19,7 @@ public class StyleController {
     @Autowired
     private StyleService styleService;
 
-    @GetMapping("/getAllStyle")
+    @GetMapping("/getAllStyles")
     public ResponseEntity<ResponseData<Object>> getAllBrand() throws BusinessException {
         return ResponseEntity.ok()
                 .body(new ResponseData<>().success(styleService.getAllStyles()));
