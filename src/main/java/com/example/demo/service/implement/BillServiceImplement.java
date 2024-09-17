@@ -65,7 +65,7 @@ public class BillServiceImplement implements BillService {
         }
 
         // Lọc hóa đơn theo `username` của khách hàng và trạng thái
-        Page<Bill> bills = billRepository.findByCreatedByAndStatus(username, status, pageable);
+        Page<Bill> bills = billRepository.findByCreatedByAndStatus(username,keyword,status,pageable);
 
         for (Bill bill : bills) {
             BillResult result = new BillResult();

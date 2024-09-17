@@ -178,8 +178,35 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
 
     Page<Bill> findByCreatedByAndStatus(String createdBy, String status, Pageable pageable);
 
-
-
+    @Query(value = "SELECT b.* FROM BILL b " +
+            "WHERE (" +
+            "LOWER(b.CODE) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(b.RECIPIENT_NAME) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(b.RECIPIENT_PHONE_NUMBER) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(FORMAT(b.CREATED_DATE, 'yyyy-MM-dd')) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(FORMAT(b.DATE_OF_PAYMENT, 'yyyy-MM-dd')) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(FORMAT(b.ESTIMATED_DELIVERY_DATE, 'yyyy-MM-dd')) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(FORMAT(b.MODIFIED_DATE, 'yyyy-MM-dd')) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(FORMAT(b.SHIPPING_DATE, 'yyyy-MM-dd')) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +  // Sửa dấu ngoặc đóng
+            "AND LOWER(b.CREATED_BY) LIKE LOWER(CONCAT('%', :createdBy, '%')) " +
+            "AND LOWER(b.STATUS) LIKE LOWER(CONCAT('%', :status, '%'))",
+            countQuery = "SELECT COUNT(*) FROM BILL b " +
+                    "WHERE (" +
+                    "LOWER(b.CODE) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+                    "OR LOWER(b.RECIPIENT_NAME) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+                    "OR LOWER(b.RECIPIENT_PHONE_NUMBER) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+                    "OR LOWER(FORMAT(b.CREATED_DATE, 'yyyy-MM-dd')) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+                    "OR LOWER(FORMAT(b.DATE_OF_PAYMENT, 'yyyy-MM-dd')) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+                    "OR LOWER(FORMAT(b.ESTIMATED_DELIVERY_DATE, 'yyyy-MM-dd')) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+                    "OR LOWER(FORMAT(b.MODIFIED_DATE, 'yyyy-MM-dd')) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+                    "OR LOWER(FORMAT(b.SHIPPING_DATE, 'yyyy-MM-dd')) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +  // Sửa dấu ngoặc đóng
+                    "AND LOWER(b.CREATED_BY) LIKE LOWER(CONCAT('%', :createdBy, '%')) " +
+                    "AND LOWER(b.STATUS) LIKE LOWER(CONCAT('%', :status, '%'))",
+            nativeQuery = true)
+    Page<Bill> findByCreatedByAndStatus(@Param("createdBy") String createdBy,
+                                        @Param("keyword") String keyword,
+                                        @Param("status") String status,
+                                        Pageable pageable);
 
 
 

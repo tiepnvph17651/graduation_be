@@ -33,5 +33,5 @@ public interface ProductService {
 
     List<Product> getTop4NewestProducts () throws BusinessException;
 
-    List<BestSellingProductDto> getTop4BestSellingProducts();
+    List<Product> getTop4BestSellingProducts();
 }

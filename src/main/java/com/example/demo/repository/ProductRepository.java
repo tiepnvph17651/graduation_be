@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Integer> , JpaSpecificationExecutor<Product> {
+public interface ProductRepository extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
 
     @Query("SELECT pd.product.id,pd.product.productName, SUM(bd.quantity) AS totalQuantity " +
             "FROM BillDetail bd JOIN ProductDetail pd ON bd.productDetail.id = pd.id " +
@@ -90,9 +90,16 @@ public interface ProductRepository extends JpaRepository<Product, Integer> , Jpa
 
     List<Product> findByStatus(Integer status);
 
-    @Query("SELECT new com.example.demo.model.DTO.BestSellingProductDto(bd.productDetail.product.productName, SUM(bd.quantity)) " +
+    //    @Query("SELECT new com.example.demo.model.DTO.BestSellingProductDto(bd.productDetail.product.productName, SUM(bd.quantity)) " +
+//            "FROM BillDetail bd " +
+//            "GROUP BY bd.productDetail.product.productName " +
+//            "ORDER BY SUM(bd.quantity) DESC")
+//    List<BestSellingProductDto> findTop4BestSellingProducts();
+    @Query("SELECT bd.productDetail.product " +
             "FROM BillDetail bd " +
-            "GROUP BY bd.productDetail.product.productName " +
+            "GROUP BY bd.productDetail.product " +
             "ORDER BY SUM(bd.quantity) DESC")
-    List<BestSellingProductDto> findTop4BestSellingProducts();
+    List<Product> findTop4BestSellingProducts(Pageable pageable);
+
+
 }

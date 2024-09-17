@@ -242,10 +242,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<BestSellingProductDto> getTop4BestSellingProducts() {
-        return productRepository.findTop4BestSellingProducts().stream()
-                .limit(4)  // Giới hạn số lượng sản phẩm trả về là 4
-                .toList();
+    public List<Product> getTop4BestSellingProducts() {
+        Pageable top4 = PageRequest.of(0, 4);
+        return productRepository.findTop4BestSellingProducts(top4);
     }
 
 }

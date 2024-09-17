@@ -265,7 +265,8 @@ public class ProductController {
     }
 
     @GetMapping("/top4-selling-products")
-    public List<BestSellingProductDto> getTo4p4SellingProducts() {
-        return productService.getTop4BestSellingProducts();
+    public ResponseEntity<ResponseData<Object>> getTo4p4SellingProducts() throws  BusinessException{
+        return ResponseEntity.ok()
+                .body(new ResponseData<>().success(productService.getTop4BestSellingProducts()));
     }
 }
