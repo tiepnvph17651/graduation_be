@@ -13,10 +13,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ForgotPasswordRequest {
-    @NotBlank(message = "is.not.blank")
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "is.not.valid")
+    @NotBlank(message = "Tài khoản không được để trống")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "Tài khoản không hợp lệ")
     private String username;
-    @Email(message = "is.not.valid")
-    @NotBlank(message = "is.not.blank")
+    @Email(message = "Email không hợp lệ")
+    @NotBlank(message = "Email không được để trống")
     private String email;
 }
