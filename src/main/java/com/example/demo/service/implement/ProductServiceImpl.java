@@ -139,9 +139,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public AddProductRequest saveProduct(AddProductRequest productRequest) throws BusinessException {
         String user = SercurityUtils.getCurrentUser();
-        String productName = productRequest.getProductName().toLowerCase();
+        String productName = productRequest.getProductName().trim().toLowerCase();
         if(productRepository.existsByProductNameIgnoreCase(productName)){
-            throw new BusinessException(ErrorCode.PRODUCTNAME_ALREADY_EXISTS);
+            throw new BusinessException(ErrorCode.PRODUCTNAME_ALREADY_EXISTS,"Tên sản phẩm đã tồn tại");
         }
         Product product = new Product();
         product.setProductName(productRequest.getProductName());

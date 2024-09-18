@@ -105,5 +105,5 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
             "ORDER BY SUM(bd.quantity) DESC")
     List<Product> findTop4BestSellingProducts(Pageable pageable);
 
-
+    Product findByProductNameIgnoreCase(String productName);
 }

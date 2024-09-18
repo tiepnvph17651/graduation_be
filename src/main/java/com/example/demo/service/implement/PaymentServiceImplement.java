@@ -256,11 +256,11 @@ public class PaymentServiceImplement implements PaymentService {
         log.info("get user info username: {}", username);
         User user = this.userRepository.findUserByUsername(username);
         if (user == null) {
-            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND,"Tài khoản không tồn tại");
         }
         Address address = this.addressRepository.findDefaultAddress(username);
         if (address == null) {
-            throw new BusinessException(ErrorCode.ADDRESS_NOT_FOUND);
+            throw new BusinessException(ErrorCode.ADDRESS_NOT_FOUND,"Địa chỉ không tồn tại");
         }
         UserInfoResponse response = new UserInfoResponse();
         response.setFullName(user.getFullName());
