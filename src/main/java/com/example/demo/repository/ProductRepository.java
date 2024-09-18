@@ -57,8 +57,12 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
             "ORDER BY YEAR(b.dateOfPayment), MONTH(b.dateOfPayment)")
     List<Object[]> findRevenueByMonthYear();
 
-    @Query(value = "SELECT DATEPART(MONTH, b.DATE_OF_PAYMENT) as month, SUM(b.PRICE) as totalAmount " +
-            "FROM BILL b GROUP BY DATEPART(MONTH, b.DATE_OF_PAYMENT)", nativeQuery = true)
+    @Query(value = "SELECT DATEPART(MONTH, b.DATE_OF_PAYMENT) AS month, \n" +
+            "       ISNULL(SUM(b.PRICE), 0) AS totalAmount\n" +
+            "FROM BILL b\n" +
+            "WHERE DATEPART(MONTH, b.DATE_OF_PAYMENT) BETWEEN 1 AND 12\n" +
+            "GROUP BY DATEPART(MONTH, b.DATE_OF_PAYMENT)\n" +
+            "ORDER BY month\n", nativeQuery = true)
     List<Object[]> findMonthlyRevenue();
 
 

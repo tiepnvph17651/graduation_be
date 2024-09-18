@@ -10,6 +10,7 @@ public class FakeData {
 
     public static List<ShippingHistory> getParentShippingHistoryTC(String username, Integer billId) {
         LocalDateTime dateTime = LocalDateTime.now();
+        username = SercurityUtils.getCurrentUser();
         return List.of(
                 new ShippingHistory(1, billId,1, OrderEnum.DONE.getValue(), username, username, "Đặt hàng", "Đơn hàng đã được đặt thành công", null, dateTime, dateTime),
                 new ShippingHistory(2, billId,2, OrderEnum.PENDING.getValue(), username, username, "Đang xử lý", "Đơn hàng đang chờ xác nhận", null, dateTime.plusDays(1).plusHours(5), dateTime.plusDays(1).plusHours(5)),
@@ -21,6 +22,7 @@ public class FakeData {
 
     public static List<ShippingHistory> getParentShippingHistory(String username, Integer billId) {
         LocalDateTime dateTime = LocalDateTime.now();
+        username = SercurityUtils.getCurrentUser();
         return List.of(
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đặt hàng", "Đơn hàng đã được đặt thành công", null, dateTime, dateTime),
                 new ShippingHistory(null, billId,null, OrderEnum.PENDING.getValue(), username, username, "Đang xử lý", "Đơn hàng đang chờ xác nhận", null, dateTime.plusHours(2), dateTime.plusHours(2)),
@@ -32,6 +34,7 @@ public class FakeData {
 
     public static List<ShippingHistory> getChildPENDINGTC(String username, Integer billId, int parentId) {
         LocalDateTime dateTime = LocalDateTime.now();
+        username = SercurityUtils.getCurrentUser();
         return List.of(
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "kiểm tra tồn kho", "Sản phẩm còn hàng trong kho", parentId, dateTime, dateTime),
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đang đóng gói", "Sản phẩm đang được đóng gói để chuẩn bị cho vận chuyển", parentId, dateTime.plusHours(1), dateTime.plusHours(1)),
@@ -42,6 +45,7 @@ public class FakeData {
 
     public static List<ShippingHistory> getChildPAYMENTTC(String username, Integer billId, int parentId) {
         LocalDateTime dateTime = LocalDateTime.now();
+        username = SercurityUtils.getCurrentUser();
         return List.of(
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đang xử lý", "Đơn hàng đang được xử lý và chuẩn bị để đóng gói", parentId, dateTime.plusDays(1).plusHours(1), dateTime.plusDays(1).plusHours(1)),
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đang đóng gói", " Sản phẩm đang được đóng gói để chuẩn bị cho quá trình vận chuyển", parentId, dateTime.plusDays(1).plusHours(1), dateTime.plusDays(1).plusHours(1))
@@ -50,6 +54,7 @@ public class FakeData {
 
     public static List<ShippingHistory> getChildPENDING(String username, Integer billId, int parentId) {
         LocalDateTime dateTime = LocalDateTime.now();
+        username = SercurityUtils.getCurrentUser();
         return List.of(
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "kiểm tra tồn kho", "Sản phẩm còn hàng trong kho", parentId, dateTime.plusDays(2), dateTime.plusDays(2)),
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đang đóng gói", "Sản phẩm đang được đóng gói để chuẩn bị cho vận chuyển", parentId, dateTime.plusDays(2).plusHours(1), dateTime.plusDays(2).plusHours(1)),
@@ -60,6 +65,7 @@ public class FakeData {
 
     public static List<ShippingHistory> getChildSHIPPING(String username, Integer billId, int parentId) {
         LocalDateTime dateTime = LocalDateTime.now();
+        username = SercurityUtils.getCurrentUser();
         return List.of(
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đã chuyển cho bên vận chuyển", "Đơn hàng đã được chuyển cho đơn vị vận chuyển", parentId, dateTime.plusDays(3), dateTime.plusDays(3)),
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đang giao hàng", "Đơn hàng đã được chuyển đến đơn vị vận chuyển và đang trên đường tới khách hàng", parentId, dateTime.plusDays(3).plusHours(1), dateTime.plusDays(3).plusHours(1))
@@ -68,6 +74,7 @@ public class FakeData {
 
     public static List<ShippingHistory> getChildRECEIVED(String username, Integer billId, int parentId) {
         LocalDateTime dateTime = LocalDateTime.now();
+        username = SercurityUtils.getCurrentUser();
         return List.of(
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Đã nhận hàng", "Khách hàng đã nhận được hàng", parentId, dateTime.plusDays(4), dateTime.plusDays(4)),
                 new ShippingHistory(null, billId,null, OrderEnum.DONE.getValue(), username, username, "Kiểm tra hàng hóa", "Khách hàng đang kiểm tra hàng hóa", parentId, dateTime.plusDays(4).plusHours(1), dateTime.plusDays(4).plusHours(1)),

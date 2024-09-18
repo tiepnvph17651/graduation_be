@@ -360,6 +360,7 @@ public class BillServiceImplement implements BillService {
             orderGeneralResult.setStepCode(history.getId());
             orderGeneralResult.setStepName(history.getTitle());
             orderGeneralResult.setTimeStep(CommonUtil.date2Str(history.getModifiedDate()));
+            orderGeneralResult.setUsername(SercurityUtils.getCurrentUser());
             orderGeneralResults.add(orderGeneralResult);
             i++;
         }
@@ -400,6 +401,7 @@ public class BillServiceImplement implements BillService {
             orderDetailResult.setStepName(history.getTitle());
             orderDetailResult.setStepDate(CommonUtil.date2Str(history.getModifiedDate()));
             orderDetailResult.setDescription(history.getContent());
+            orderDetailResult.setUsername(SercurityUtils.getCurrentUser());
             orderDetailResults.add(orderDetailResult);
         }
         return orderDetailResults;

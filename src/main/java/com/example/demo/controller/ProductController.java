@@ -44,13 +44,16 @@ public class ProductController {
         List<RevenueData> revenueDataList = new ArrayList<>();
 
         for (Object[] result : results) {
-            int month = ((Number) result[0]).intValue();
-            double totalAmount = ((Number) result[1]).doubleValue();
-            revenueDataList.add(new RevenueData(month, totalAmount));
+            Integer month = (result[0] != null) ? ((Number) result[0]).intValue() : 0;
+            Double totalAmount = (result[1] != null) ? ((Number) result[1]).doubleValue() : 0.0;
+            if (month != 0) {  // Loại bỏ tháng 0
+                revenueDataList.add(new RevenueData(month, totalAmount));
+            }
         }
 
         return revenueDataList;
     }
+
 
     @GetMapping("/best-selling-products")
     public List<BestSellingProductDto> getBestSellingProducts(@RequestParam(value = "currentMonth", required = false) int currentMonth) {

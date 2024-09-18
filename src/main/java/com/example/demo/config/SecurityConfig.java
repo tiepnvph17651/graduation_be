@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1.0/auth/**").permitAll()
                         .requestMatchers("api/v1.0/product/detail/**").permitAll()
 //                        .anyRequest().authenticated()
-                        .anyRequest().permitAll()
+                                .anyRequest().permitAll()
                 );
         return http.build();
     }

@@ -9,4 +9,5 @@ public class OrderGeneralResult {
     private String timeStep;
     private String icon;
     private String status;
+    private String username;
 }

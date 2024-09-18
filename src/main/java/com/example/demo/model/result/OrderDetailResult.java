@@ -9,5 +9,6 @@ public class OrderDetailResult {
     private String stepDate;
     private String description;
     private String icon;
+    private String username;
 
 }
