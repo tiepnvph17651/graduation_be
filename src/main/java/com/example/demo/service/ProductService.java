@@ -21,7 +21,7 @@ public interface ProductService {
     ProductResponse getProducts(ProductRequest request, int page, int size) throws BusinessException;
     AddProductRequest saveProduct(AddProductRequest Product) throws BusinessException;
 
-    Product deleteProduct(Integer id) throws BusinessException;
+    Product updateProduct(Product product) throws BusinessException;
 
     Product getProduct(Integer id) throws BusinessException;
 

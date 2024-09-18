@@ -13,6 +13,7 @@ import com.example.demo.model.request.*;
 import com.example.demo.model.response.ProductResponse;
 import com.example.demo.model.response.ProductShowCustomResponse;
 import com.example.demo.model.utilities.CommonUtil;
+import com.example.demo.model.utilities.SercurityUtils;
 import com.example.demo.repository.ProductDetailsRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.ProductSpecifications;
@@ -137,6 +138,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public AddProductRequest saveProduct(AddProductRequest productRequest) throws BusinessException {
+        String user = SercurityUtils.getCurrentUser();
         String productName = productRequest.getProductName().toLowerCase();
         if(productRepository.existsByProductNameIgnoreCase(productName)){
             throw new BusinessException(ErrorCode.PRODUCTNAME_ALREADY_EXISTS);
@@ -147,9 +149,9 @@ public class ProductServiceImpl implements ProductService {
         product.setSole(productRequest.getSole());
         product.setStyle(productRequest.getStyle());
         product.setMaterial(productRequest.getMaterial());
-        product.setCreatedBy(productRequest.getCreatedBy());
+        product.setCreatedBy(user);
         product.setCreatedDate(productRequest.getCreatedDate());
-        product.setModifiedBy(productRequest.getModifiedBy());
+        product.setModifiedBy(user);
         product.setModifiedDate(productRequest.getModifiedDate());
         product.setDescription(productRequest.getDescription());
         product.setStatus(productRequest.getStatus());
@@ -178,6 +180,11 @@ public class ProductServiceImpl implements ProductService {
             }
         }
         return productRequest;
+    }
+
+    @Override
+    public Product updateProduct(Product product) throws BusinessException {
+        return productRepository.save(product);
     }
 
     @Override
@@ -214,10 +221,6 @@ public class ProductServiceImpl implements ProductService {
         return productResponse;
     }
 
-    @Override
-    public Product deleteProduct(Integer id) throws BusinessException {
-        return null;
-    }
 
     @Override
     public Product getProduct(Integer id) throws BusinessException {

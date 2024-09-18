@@ -269,4 +269,10 @@ public class ProductController {
         return ResponseEntity.ok()
                 .body(new ResponseData<>().success(productService.getTop4BestSellingProducts()));
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<ResponseData<Object>> update(@RequestBody Product id) throws BusinessException {
+        return ResponseEntity.ok()
+                .body(new ResponseData<>().success(productService.updateProduct(id)));
+    }
 }
