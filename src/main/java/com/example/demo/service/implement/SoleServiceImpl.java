@@ -4,6 +4,7 @@ import com.example.demo.config.exception.BusinessException;
 import com.example.demo.entity.Brand;
 import com.example.demo.entity.Material;
 import com.example.demo.entity.Sole;
+import com.example.demo.enums.ErrorCode;
 import com.example.demo.model.info.PaginationInfo;
 import com.example.demo.model.request.SoleRequest;
 import com.example.demo.model.response.BrandsResponse;
@@ -47,6 +48,12 @@ public class SoleServiceImpl implements SoleService {
 
     @Override
     public Sole saveSole(Sole sole) throws BusinessException {
+        if (sole.getName() == null || sole.getName().trim().isEmpty()) {
+            throw new BusinessException(ErrorCode.SOLE_NAME_IS_NOT_BLANK,"Tên đế giày không được để trống!");
+        }
+        if(soleRepository.existsByNameIgnoreCase(sole.getName().trim().toLowerCase())){
+            throw new BusinessException(ErrorCode.SOLE_NAME_IS_EXIST,"Tên đế giày đã tồn tại!");
+        }
         return soleRepository.save(sole);
     }
 
@@ -57,6 +64,12 @@ public class SoleServiceImpl implements SoleService {
 
     @Override
     public Sole update(Sole sole) throws BusinessException {
+        if (sole.getName() == null || sole.getName().trim().isEmpty()) {
+            throw new BusinessException(ErrorCode.SOLE_NAME_IS_NOT_BLANK,"Tên đế giày không được để trống!");
+        }
+        if(soleRepository.existsByNameIgnoreCase(sole.getName().trim().toLowerCase())){
+            throw new BusinessException(ErrorCode.SOLE_NAME_IS_EXIST,"Tên đế giày đã tồn tại!");
+        }
         return soleRepository.save(sole);
     }
 

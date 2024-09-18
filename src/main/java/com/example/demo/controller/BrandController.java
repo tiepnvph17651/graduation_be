@@ -61,16 +61,4 @@ public class BrandController extends BaseController {
         return ResponseEntity.ok()
                 .body(new ResponseData<>().success(brandService.getAllBrandsForC()));
     }
-//
-//    @DeleteMapping("/delete/{id}")
-//    public ResponseEntity<ResponseData<Object>> deleteBrand(@PathVariable int id) throws BusinessException {
-//        return ResponseEntity.ok()
-//                .body(new ResponseData<>().success(brandService.deleteBrand(id, this.getUsername())));
-//    }
-//
-//    @GetMapping("/get-brand/{id}")
-//    public ResponseEntity<ResponseData<Object>> getBrand(@PathVariable int id) throws BusinessException {
-//        return ResponseEntity.ok()
-//                .body(new ResponseData<>().success(brandService.getBrand(id)));
-//    }
 }

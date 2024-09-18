@@ -3,6 +3,7 @@ package com.example.demo.service.implement;
 import com.example.demo.config.exception.BusinessException;
 import com.example.demo.entity.Brand;
 import com.example.demo.entity.Material;
+import com.example.demo.enums.ErrorCode;
 import com.example.demo.model.info.PaginationInfo;
 import com.example.demo.model.request.MaterialRequest;
 import com.example.demo.model.response.BrandsResponse;
@@ -46,6 +47,12 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public Material saveMaterial(Material material) throws BusinessException {
+        if (material.getName() == null || material.getName().trim().isEmpty()) {
+            throw new BusinessException(ErrorCode.MATERIAL_NAME_IS_NOT_BLANK,"Tên chất liệu không được để trống!");
+        }
+        if(materialRepository.existsByNameIgnoreCase(material.getName().trim().toLowerCase())){
+            throw new BusinessException(ErrorCode.MATERIAL_NAME_IS_EXIST,"Tên chất liệu đã tồn tại!");
+        }
         return materialRepository.save(material);
     }
 
@@ -56,6 +63,12 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public Material update(Material material) throws BusinessException {
+        if (material.getName() == null || material.getName().trim().isEmpty()) {
+            throw new BusinessException(ErrorCode.MATERIAL_NAME_IS_NOT_BLANK,"Tên chất liệu không được để trống!");
+        }
+        if(materialRepository.existsByNameIgnoreCase(material.getName().trim().toLowerCase())){
+            throw new BusinessException(ErrorCode.MATERIAL_NAME_IS_EXIST,"Tên chất liệu đã tồn tại!");
+        }
         return materialRepository.save(material);
     }
 

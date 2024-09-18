@@ -47,11 +47,11 @@ public class ColorServiceImpl implements ColorService {
 
     @Override
     public Color saveColor(Color color) throws BusinessException {
-        if(colorRepository.existsByNameIgnoreCase(color.getName())){
-            throw new BusinessException(ErrorCode.COLOR_NAME_IS_EXIST);
+        if(colorRepository.existsByNameIgnoreCase(color.getName().trim().toLowerCase())){
+            throw new BusinessException(ErrorCode.COLOR_NAME_IS_EXIST,"Tên màu đã tồn tại!");
         }
-        if(colorRepository.existsByCodeIgnoreCase(color.getCode())){
-            throw new BusinessException(ErrorCode.COLOR_CODE_IS_EXIST);
+        if(colorRepository.existsByCodeIgnoreCase(color.getCode().trim().toLowerCase())){
+            throw new BusinessException(ErrorCode.COLOR_CODE_IS_EXIST,"Mã màu đã tồn tại!");
         }
         return colorRepository.save(color);
     }
@@ -63,6 +63,12 @@ public class ColorServiceImpl implements ColorService {
 
     @Override
     public Color update(Color color) throws BusinessException {
+        if(colorRepository.existsByNameIgnoreCase(color.getName().trim().toLowerCase())){
+            throw new BusinessException(ErrorCode.COLOR_NAME_IS_EXIST,"Tên màu đã tồn tại!");
+        }
+        if(colorRepository.existsByCodeIgnoreCase(color.getCode().trim().toLowerCase())){
+            throw new BusinessException(ErrorCode.COLOR_CODE_IS_EXIST,"Mã màu đã tồn tại!");
+        }
         return colorRepository.save(color);
     }
 

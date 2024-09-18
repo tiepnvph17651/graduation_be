@@ -20,8 +20,6 @@ public class Brand {
     @Column(name = "id")
     private Integer id;
 
-//    @NotNull(message = "is.not.blank")
-    @NotBlank(message = "brand.name.is.not.blank")
     @Column(name = "name")
     private String name;
 

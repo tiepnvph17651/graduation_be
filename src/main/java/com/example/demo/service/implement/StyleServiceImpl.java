@@ -3,6 +3,7 @@ package com.example.demo.service.implement;
 import com.example.demo.config.exception.BusinessException;
 import com.example.demo.entity.Brand;
 import com.example.demo.entity.Style;
+import com.example.demo.enums.ErrorCode;
 import com.example.demo.model.info.PaginationInfo;
 import com.example.demo.model.request.StyleRequest;
 import com.example.demo.model.response.BrandsResponse;
@@ -46,6 +47,12 @@ public class StyleServiceImpl implements StyleService {
 
     @Override
     public Style saveStyle(Style style) throws BusinessException {
+        if (style.getName() == null || style.getName().trim().isEmpty()) {
+            throw new BusinessException(ErrorCode.STYLE_NAME_IS_NOT_BLANK,"Tên kiểu dáng không được để trống!");
+        }
+        if(styleRepository.existsByNameIgnoreCase(style.getName().trim().toLowerCase())){
+            throw new BusinessException(ErrorCode.STYLE_NAME_IS_EXIST,"Tên kiểu dáng đã tồn tại!");
+        }
         return styleRepository.save(style);
     }
 

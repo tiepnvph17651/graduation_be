@@ -19,7 +19,6 @@ public class Sole {
     @Column(name = "id")
     private Integer id;
 
-    @NotBlank(message = "is.not.blank")
     @Column(name = "name")
     private String name;
 

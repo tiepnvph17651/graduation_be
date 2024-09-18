@@ -45,8 +45,11 @@ public class BrandServiceImplement implements BrandService {
 
     @Override
     public Brand saveBrand(Brand brand) throws BusinessException {
-        if(brandRepository.existsByNameIgnoreCase(brand.getName())){
-            throw new BusinessException(ErrorCode.BRAND_NAME_IS_EXIST);
+        if (brand.getName() == null || brand.getName().trim().isEmpty()) {
+            throw new BusinessException(ErrorCode.BRAND_NAME_IS_NOT_BLANK,"Tên thương hiệu không được để trống!");
+        }
+        if(brandRepository.existsByNameIgnoreCase(brand.getName().trim().toLowerCase())){
+            throw new BusinessException(ErrorCode.BRAND_NAME_IS_EXIST,"Tên thương hiệu đã tồn tại!");
         }
         return brandRepository.save(brand);
     }
@@ -58,6 +61,12 @@ public class BrandServiceImplement implements BrandService {
 
     @Override
     public Brand update(Brand brand) throws BusinessException {
+        if (brand.getName() == null || brand.getName().trim().isEmpty()) {
+            throw new BusinessException(ErrorCode.BRAND_NAME_IS_NOT_BLANK,"Tên thương hiệu không được để trống!");
+        }
+        if(brandRepository.existsByNameIgnoreCase(brand.getName().trim().toLowerCase())){
+            throw new BusinessException(ErrorCode.BRAND_NAME_IS_EXIST,"Tên thương hiệu đã tồn tại!");
+        }
         return brandRepository.save(brand);
     }
 

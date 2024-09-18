@@ -1,11 +1,10 @@
 package com.example.demo.service.implement;
 
 import com.example.demo.config.exception.BusinessException;
-import com.example.demo.entity.Brand;
 import com.example.demo.entity.Size;
+import com.example.demo.enums.ErrorCode;
 import com.example.demo.model.info.PaginationInfo;
 import com.example.demo.model.request.SizeRequest;
-import com.example.demo.model.response.BrandsResponse;
 import com.example.demo.model.response.SizeResponse;
 import com.example.demo.model.utilities.CommonUtil;
 import com.example.demo.repository.SizeRepository;
@@ -48,9 +47,14 @@ public class SizeServiceImpl implements SizeService {
 
     @Override
     public Size saveSize(Size size) throws BusinessException {
+        if (size.getName() == null || size.getName().trim().isEmpty()) {
+            throw new BusinessException(ErrorCode.SIZE_NAME_IS_NOT_BLANK,"Tên kích cỡ không được để trống!");
+        }
+        if(sizeRepository.existsByNameIgnoreCase(size.getName().trim().toLowerCase())){
+            throw new BusinessException(ErrorCode.SIZE_NAME_IS_EXIST,"Tên kích cỡ đã tồn tại!");
+        }
         return sizeRepository.save(size);
     }
-
     @Override
     public Size changeStatus(Size size) throws BusinessException {
         return sizeRepository.save(size);
@@ -58,6 +62,12 @@ public class SizeServiceImpl implements SizeService {
 
     @Override
     public Size update(Size size) throws BusinessException {
+        if (size.getName() == null || size.getName().trim().isEmpty()) {
+            throw new BusinessException(ErrorCode.SIZE_NAME_IS_NOT_BLANK,"Tên kích cỡ không được để trống!");
+        }
+        if(sizeRepository.existsByNameIgnoreCase(size.getName().trim().toLowerCase())){
+            throw new BusinessException(ErrorCode.SIZE_NAME_IS_EXIST,"Tên kích cỡ đã tồn tại!");
+        }
         return sizeRepository.save(size);
     }
 

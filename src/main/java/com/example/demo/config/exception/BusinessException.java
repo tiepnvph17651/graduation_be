@@ -35,4 +35,8 @@ public class BusinessException extends Exception{
         this.errorCode = errorCode;
         this.detailMessage = "";
     }
+    @Override
+    public String getMessage() {
+        return detailMessage;
+    }
 }

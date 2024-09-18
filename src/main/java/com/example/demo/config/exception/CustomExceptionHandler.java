@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -24,4 +25,12 @@ public class CustomExceptionHandler {
         // Trả về danh sách thông báo lỗi
         return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<Map<String, String>> handleBusinessException(BusinessException ex) {
+        // Trả về thông báo lỗi từ BusinessException
+        return new ResponseEntity<>(Map.of(
+                "message", ex.getDetailMessage()
+        ), HttpStatus.BAD_REQUEST);
+    }
+
 }

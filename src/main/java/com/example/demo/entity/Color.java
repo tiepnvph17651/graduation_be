@@ -18,11 +18,10 @@ public class Color {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-    @NotBlank(message = "is.not.blank")
+
     @Column(name = "name")
     private String name;
 
-    @NotBlank(message = "mau.is.not.blank")
     @Column(name = "code")
     private String code;
 

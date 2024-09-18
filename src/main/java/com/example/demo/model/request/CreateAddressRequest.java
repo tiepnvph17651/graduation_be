@@ -26,7 +26,7 @@ public class CreateAddressRequest {
     private String address;
 
     @NotBlank(message = "Số điện thoại không được để trống")
-    @Pattern(regexp = "^(0[1-9]|84[1-9])([0-9]{8,9})$", message = "is.not.valid.")
+    @Pattern(regexp = "^(0[1-9]|84[1-9])([0-9]{8,9})$", message = "Số điện thoại không hợp lệ")
     private String numberPhone;
 
     @JsonProperty("DistrictID")
